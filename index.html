@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Surrounded by Idiots — Personality Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --red:#C0392B; --red-light:#FDECEA; --red-mid:#E74C3C;
+  --yellow:#D4AC0D; --yellow-light:#FEFDE8; --yellow-mid:#F1C40F;
+  --green:#1E8449; --green-light:#E9F7EF; --green-mid:#27AE60;
+  --blue:#1A5276; --blue-light:#EBF5FB; --blue-mid:#2980B9;
+  --bg:#FAFAF8; --surface:#FFFFFF; --border:#E8E6E0;
+  --text:#1A1A1A; --muted:#6B6860; --subtle:#F2F0EB;
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-body:'DM Sans',sans-serif;
+  --radius:12px; --radius-lg:20px;
+  --shadow:0 2px 16px rgba(0,0,0,0.07);
+  --shadow-hover:0 6px 28px rgba(0,0,0,0.12);
+  --tr:all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;}
+.hidden{display:none!important;}
+.fade-in{animation:fadeIn .5s ease forwards;}
+.slide-up{animation:slideUp .45s cubic-bezier(0.4,0,0.2,1) forwards;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gradShift{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+@keyframes growBar{from{width:0}to{width:var(--tw)}}
+.screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;}
+.container{width:100%;max-width:680px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,250,248,0.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-left{display:flex;align-items:center;gap:1rem;}
+.nav-logo{font-family:var(--font-display);font-size:1.05rem;font-style:italic;color:var(--text);letter-spacing:-0.02em;}
+.nav-right{display:flex;align-items:center;gap:0.25rem;}
+.nav-btn{background:none;border:none;padding:6px 14px;border-radius:99px;font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--muted);cursor:pointer;transition:var(--tr);letter-spacing:.01em;}
+.nav-btn:hover,.nav-btn.active{background:var(--text);color:#fff;}
+.lang-toggle{display:flex;align-items:center;border:1px solid var(--border);border-radius:99px;overflow:hidden;background:var(--surface);margin-left:0.5rem;}
+.lang-btn{background:none;border:none;padding:5px 11px;font-family:var(--font-body);font-size:0.78rem;font-weight:500;color:var(--muted);cursor:pointer;transition:var(--tr);letter-spacing:.02em;white-space:nowrap;}
+.lang-btn.active{background:var(--text);color:#fff;}
+
+/* LANDING */
+#screen-landing{padding-top:56px;background:radial-gradient(ellipse 60% 50% at 80% 20%,rgba(192,57,43,.06) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 10% 80%,rgba(26,82,118,.07) 0%,transparent 70%),var(--bg);}
+.landing-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);padding:5px 14px;border-radius:99px;margin-bottom:1.5rem;background:var(--surface);}
+.anim-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--red-mid),var(--yellow-mid),var(--green-mid),var(--blue-mid));background-size:200%;animation:gradShift 3s linear infinite;}
+.landing-title{font-family:var(--font-display);font-size:clamp(2.4rem,6vw,3.6rem);line-height:1.08;letter-spacing:-.03em;margin-bottom:1.75rem;color:var(--text);}
+.landing-title em{font-style:italic;color:var(--red);}
+.landing-cta{display:inline-flex;align-items:center;gap:10px;background:var(--text);color:#fff;border:none;padding:15px 32px;border-radius:99px;font-family:var(--font-body);font-size:.95rem;font-weight:500;cursor:pointer;transition:var(--tr);letter-spacing:.01em;}
+.landing-cta:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);}
+.landing-cta svg{transition:transform .3s ease;}
+.landing-cta:hover svg{transform:translateX(4px);}
+.color-preview{display:flex;gap:12px;margin-top:3rem;flex-wrap:wrap;}
+.color-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;font-size:.8rem;font-weight:500;border:1px solid transparent;}
+.color-chip .dot{width:10px;height:10px;border-radius:50%;}
+.chip-red{background:var(--red-light);color:var(--red);border-color:rgba(192,57,43,.15);}
+.chip-yellow{background:var(--yellow-light);color:#9A7D0A;border-color:rgba(212,172,13,.2);}
+.chip-green{background:var(--green-light);color:var(--green);border-color:rgba(30,132,73,.15);}
+.chip-blue{background:var(--blue-light);color:var(--blue);border-color:rgba(26,82,118,.15);}
+.landing-attribution{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--muted);}
+
+/* GUIDE */
+#screen-guide{padding-top:80px;align-items:flex-start;}
+.guide-header{margin-bottom:2rem;}
+.guide-title{font-family:var(--font-display);font-size:2rem;letter-spacing:-.025em;margin-bottom:.5rem;}
+.guide-subtitle{color:var(--muted);font-size:.95rem;font-weight:300;}
+.guide-grid{display:flex;flex-direction:column;gap:1.5rem;}
+.guide-card{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;transition:var(--tr);}
+.guide-card:hover{box-shadow:var(--shadow-hover);}
+.guide-card-banner{height:6px;width:100%;}
+.guide-card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:14px;}
+.guide-color-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:#fff;flex-shrink:0;}
+.guide-card-head-text{flex:1;}
+.guide-card-title{font-family:var(--font-display);font-size:1.3rem;font-weight:700;line-height:1.2;}
+.guide-card-archetype{font-size:.78rem;color:var(--muted);margin-top:3px;letter-spacing:.02em;}
+.guide-card-description{padding:0 1.5rem 1.25rem;font-size:.9rem;color:var(--muted);line-height:1.75;font-weight:300;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
+.guide-card-body{padding:0 1.5rem 1.5rem;}
+.trait-list{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem;}
+.trait-pill{font-size:.75rem;font-weight:500;padding:4px 11px;border-radius:99px;border:1px solid transparent;}
+.celeb-section-label{font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem;}
+.celebrity-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.celeb-card{background:var(--subtle);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:8px;}
+.celeb-card-top{display:flex;align-items:center;gap:10px;}
+/*
+  Celebrity photo: real <img> with src pointing to Unsplash/Wikimedia URLs.
+  The initials div sits right after <img> in DOM but is display:none by default.
+  The img onerror swaps them only if the network request fails.
+*/
+.celeb-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2.5px solid var(--surface);display:block;flex-shrink:0;background:var(--border);}
+.celeb-initials{width:52px;height:52px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;border:2.5px solid var(--surface);flex-shrink:0;}
+.celeb-name-block{flex:1;min-width:0;}
+.celeb-name{font-size:.88rem;font-weight:600;line-height:1.3;color:var(--text);}
+.celeb-badge{display:inline-block;margin-top:4px;font-size:.67rem;font-weight:500;padding:2px 8px;border-radius:99px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.celeb-note{font-size:.78rem;color:var(--muted);line-height:1.5;font-style:italic;}
+
+/* QUIZ */
+#screen-quiz{padding-top:80px;}
+.quiz-progress-wrap{margin-bottom:2rem;}
+.quiz-progress-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.quiz-progress-label{font-size:.78rem;color:var(--muted);font-weight:500;letter-spacing:.05em;text-transform:uppercase;}
+.quiz-progress-count{font-family:var(--font-display);font-size:.9rem;color:var(--muted);}
+.quiz-progress-track{height:3px;background:var(--border);border-radius:99px;overflow:hidden;}
+.quiz-progress-fill{height:100%;background:var(--text);border-radius:99px;transition:width .5s cubic-bezier(0.4,0,0.2,1);}
+.question-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.question-scenario{font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
+.question-text{font-family:var(--font-display);font-size:1.35rem;line-height:1.4;letter-spacing:-.015em;color:var(--text);}
+.options-list{display:flex;flex-direction:column;gap:10px;}
+.option-btn{width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;font-family:var(--font-body);font-size:.92rem;color:var(--text);cursor:pointer;transition:var(--tr);display:flex;align-items:flex-start;gap:12px;line-height:1.55;}
+.option-btn:hover{border-color:var(--text);background:var(--subtle);transform:translateX(4px);}
+.option-btn.selected{border-color:var(--text);background:var(--text);color:#fff;}
+.option-letter{font-weight:700;font-size:.78rem;width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;opacity:.65;letter-spacing:0;}
+.option-btn.selected .option-letter{opacity:1;}
+.quiz-next-btn{width:100%;padding:15px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:.95rem;font-weight:500;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:.5rem;}
+.quiz-next-btn:hover{opacity:.85;}
+.quiz-next-btn:disabled{opacity:.3;cursor:default;}
+
+/* RESULTS */
+#screen-results{padding-top:80px;align-items:flex-start;}
+.results-header{margin-bottom:2rem;}
+.results-eyebrow{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.6rem;}
+.results-title{font-family:var(--font-display);font-size:clamp(1.8rem,5vw,2.5rem);letter-spacing:-.025em;line-height:1.1;margin-bottom:.5rem;}
+.results-subtitle{color:var(--muted);font-size:.9rem;font-weight:300;}
+.dominant-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;font-size:.8rem;font-weight:600;margin-bottom:1.25rem;}
+.score-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.blend-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.blend-label{font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;}
+
+/* SILHOUETTE */
+.silhouette-wrap{display:flex;justify-content:center;margin-bottom:1.75rem;}
+
+/*
+  The SVG is 120×240 user units (viewBox="0 0 120 240").
+  .body-seg CSS transitions animate the rect's y and height
+  attributes simultaneously so the figure visually fills upward.
+  Both y and height must be listed for the browser to tween them.
+*/
+#human-figure-svg{width:130px;height:auto;display:block;overflow:visible;filter:drop-shadow(0 4px 14px rgba(0,0,0,0.16));}
+.body-seg{
+  transition:
+    height 1.4s cubic-bezier(0.22,1,0.36,1),
+    y      1.4s cubic-bezier(0.22,1,0.36,1);
+}
+
+.sil-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 18px;}
+.sil-legend-item{display:flex;align-items:center;gap:6px;font-size:.8rem;font-weight:500;}
+.sil-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.score-bars{display:flex;flex-direction:column;gap:10px;margin-top:1.25rem;}
+.score-row{display:grid;grid-template-columns:76px 1fr 40px;align-items:center;gap:10px;}
+.score-label{font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:6px;}
+.score-track{height:6px;background:var(--subtle);border-radius:99px;overflow:hidden;}
+.score-fill{height:100%;border-radius:99px;width:0;animation:growBar 1s cubic-bezier(0.4,0,0.2,1) forwards;}
+.score-pct{font-size:.8rem;font-weight:600;text-align:right;color:var(--muted);}
+.summary-card{background:var(--subtle);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem;}
+.summary-card-title{font-family:var(--font-display);font-size:1.05rem;margin-bottom:.6rem;font-style:italic;}
+.summary-card-text{font-size:.9rem;color:var(--muted);line-height:1.75;font-weight:300;}
+.results-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem;}
+.btn-outline{flex:1;min-width:140px;padding:12px 20px;background:none;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:.88rem;font-weight:500;color:var(--text);cursor:pointer;transition:var(--tr);text-align:center;}
+.btn-outline:hover{background:var(--subtle);border-color:var(--text);}
+.btn-solid{flex:1;min-width:140px;padding:12px 20px;background:var(--text);border:1.5px solid var(--text);border-radius:var(--radius);font-family:var(--font-body);font-size:.88rem;font-weight:500;color:#fff;cursor:pointer;transition:var(--tr);text-align:center;}
+.btn-solid:hover{opacity:.85;}
+
+footer{text-align:center;padding:2rem 1.25rem 3rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);}
+
+@media(max-width:600px){
+  .landing-title{font-size:2rem;}
+  .question-text{font-size:1.15rem;}
+  .results-actions{flex-direction:column;}
+  nav{padding:0 1rem;}
+  .nav-logo{font-size:.9rem;}
+  #human-figure-svg{width:100px;}
+  .celebrity-grid{grid-template-columns:1fr;}
+  .lang-btn{padding:5px 8px;font-size:.72rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo" data-i18n="navLogo">Surrounded by Idiots</div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn active" id="nav-home"  onclick="showScreen('landing')" data-i18n="navHome">Home</button>
+    <button class="nav-btn"        id="nav-guide" onclick="showScreen('guide')"   data-i18n="navGuide">Color Guide</button>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button class="lang-btn active" id="lang-en" onclick="setLang('en')">🇬🇧 EN</button>
+      <button class="lang-btn"        id="lang-ru" onclick="setLang('ru')">🇷🇺 RU</button>
+    </div>
+  </div>
+</nav>
+
+<!-- LANDING -->
+<section class="screen" id="screen-landing">
+  <div class="container">
+    <div class="landing-eyebrow">
+      <span class="anim-dot"></span>
+      <span data-i18n="landingEyebrow">Personality test</span>
+    </div>
+    <h1 class="landing-title">
+      <span data-i18n="landingLine1">Discover your</span><br/>
+      <em data-i18n="landingLine2">personality</em><br/>
+      <span data-i18n="landingLine3">color.</span>
+    </h1>
+    <button class="landing-cta" onclick="startQuiz()">
+      <span data-i18n="landingCta">Begin the test</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="color-preview">
+      <div class="color-chip chip-red"><div class="dot" style="background:var(--red)"></div><span data-i18n="chipRed">Red · Dominant</span></div>
+      <div class="color-chip chip-yellow"><div class="dot" style="background:var(--yellow-mid)"></div><span data-i18n="chipYellow">Yellow · Inspiring</span></div>
+      <div class="color-chip chip-green"><div class="dot" style="background:var(--green)"></div><span data-i18n="chipGreen">Green · Stable</span></div>
+      <div class="color-chip chip-blue"><div class="dot" style="background:var(--blue)"></div><span data-i18n="chipBlue">Blue · Analytical</span></div>
+    </div>
+    <p class="landing-attribution" data-i18n="landingAttrib">Inspired by "Surrounded by Idiots" by Thomas Erikson. Results are for self-reflection only.</p>
+  </div>
+</section>
+
+<!-- COLOR GUIDE -->
+<section class="screen hidden" id="screen-guide">
+  <div class="container">
+    <div class="guide-header slide-up">
+      <p style="font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.5rem;" data-i18n="guideEyebrow">Color Guide</p>
+      <h2 class="guide-title" data-i18n="guideTitle">The four personalities</h2>
+      <p class="guide-subtitle" data-i18n="guideSubtitle">Core traits, real-world archetypes, and what each color fundamentally represents.</p>
+    </div>
+    <div class="guide-grid" id="guide-grid"></div>
+    <div style="margin-top:2rem;text-align:center;">
+      <button class="btn-outline" style="max-width:240px;" onclick="startQuiz()" data-i18n="guideCta">Take the test →</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="screen hidden" id="screen-quiz">
+  <div class="container">
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-meta">
+        <span class="quiz-progress-label" data-i18n="quizLabel">Question</span>
+        <span class="quiz-progress-count" id="progress-count">1 / 12</span>
+      </div>
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="progress-fill" style="width:8.3%"></div>
+      </div>
+    </div>
+    <div class="question-card fade-in" id="question-card">
+      <p class="question-scenario" id="q-scenario"></p>
+      <h2 class="question-text"    id="q-text"></h2>
+    </div>
+    <div class="options-list" id="options-list"></div>
+    <button class="quiz-next-btn" id="next-btn" disabled onclick="nextQuestion()">
+      <span data-i18n="quizContinue">Continue</span>
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="screen hidden" id="screen-results">
+  <div class="container">
+    <div class="results-header">
+      <p class="results-eyebrow" data-i18n="resultsEyebrow">Your personality profile</p>
+      <h2 class="results-title"   id="results-title">…</h2>
+      <p class="results-subtitle" id="results-subtitle"></p>
+    </div>
+    <div id="dominant-badge-wrap"></div>
+
+    <div class="blend-card">
+      <p class="blend-label" data-i18n="blendLabel">Personality silhouette</p>
+
+      <!--
+        HUMAN FIGURE SVG — viewBox="0 0 120 240"
+        ═══════════════════════════════════════════
+        The <clipPath id="bodyClip"> contains a single <path>
+        drawn with only M, C, L, Z commands (no A/arc).
+        This avoids all cross-browser arc-in-clipPath issues.
+
+        The path traces:
+          1. HEAD  — drawn as 4 cubic beziers forming a circle
+                     centred at (60,22) radius 18
+          2. BODY  — neck → shoulders → torso with slight waist
+                     → arms (left then right, swept back in)
+                     → hips → left leg → right leg → close
+
+        Everything is in one <path> element using fill-rule="evenodd"
+        so the head and body compound correctly.
+
+        Inside the clip:
+          • A grey base <rect> provides the resting state colour
+          • <rect id="grad-fill"> holds the linearGradient fill
+            and animates from y=240,height=0 → y=0,height=240
+
+        The gradient uses y1="1" y2="0" (HTML attribute, not JS)
+        so offset 0% = BOTTOM of figure and 100% = TOP.
+        Dominant colour at offset 0% fills the legs/lower body.
+      -->
+      <div class="silhouette-wrap">
+        <svg id="human-figure-svg" viewBox="0 0 120 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!--
+              CLIP PATH — single compound path, fill-rule evenodd
+              ──────────────────────────────────────────────────────
+              HEAD: 4-bezier circle approximation, cx=60 cy=22 r=18
+              Each quarter arc: control points ≈ r × 0.5523 = 9.94 ≈ 10
+
+              BODY: drawn clockwise from neck base downward.
+              Key coordinates (all within 120×240 viewBox):
+                Neck base:   x=53..67, y=40
+                Shoulders:   x=25..95, y=52
+                Arm ends:    x=14..106, y=100 (arms slightly angled out)
+                Waist:       x=34..86, y=95
+                Hips:        x=30..90, y=120
+                Legs split:  left ends x=28..52 y=230, right x=68..92 y=230
+            -->
+            <clipPath id="bodyClip">
+              <path fill-rule="evenodd" d="
+                M 60 4
+                C 60 4 50 4 42 12
+                C 34 20 34 32 42 40
+                C 50 48 70 48 78 40
+                C 86 32 86 20 78 12
+                C 70 4 60 4 60 4 Z
+
+                M 60 52
+                C 57 52 54 53 52 55
+                C 44 56 28 60 22 68
+                C 16 76 15 86 16 96
+                L 20 110
+                C 21 115 25 117 29 116
+                L 36 114
+                L 33 132
+                L 28 196
+                C 27 203 28 210 31 213
+                C 34 216 38 217 42 217
+                L 50 217
+                C 54 217 57 214 58 210
+                C 59 207 59 202 59 198
+                L 59 148
+                L 61 148
+                L 61 198
+                C 61 202 61 207 62 210
+                C 63 214 66 217 70 217
+                L 78 217
+                C 82 217 86 216 89 213
+                C 92 210 93 203 92 196
+                L 87 132
+                L 84 114
+                L 91 116
+                C 95 117 99 115 100 110
+                L 104 96
+                C 105 86 104 76 98 68
+                C 92 60 76 56 68 55
+                C 66 53 63 52 60 52 Z
+              "/>
+            </clipPath>
+
+            <!--
+              GRADIENT rebuilt by JS on every results render.
+              y1="1" y2="0" = colour at offset 0% is at BOTTOM.
+              Dominant colour (largest %) gets offset 0% (feet/legs).
+            -->
+            <linearGradient id="bodyGradient" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+              <!-- JS injects stops here -->
+            </linearGradient>
+          </defs>
+
+          <!-- Grey placeholder visible before gradient animates -->
+          <rect x="0" y="0" width="120" height="240" fill="#CEC9C1" clip-path="url(#bodyClip)"/>
+
+          <!--
+            Gradient rect.
+            Initial state: y=240 height=0 (hidden, at bottom edge).
+            JS sets y=0 height=240 after a 150ms delay.
+            CSS .body-seg transitions animate both attributes.
+          -->
+          <rect id="grad-fill"
+            x="0" y="240" width="120" height="0"
+            fill="url(#bodyGradient)"
+            clip-path="url(#bodyClip)"
+            class="body-seg"/>
+
+          <!-- Subtle white rim on head for depth -->
+          <circle cx="60" cy="22" r="17"
+            fill="none"
+            stroke="rgba(255,255,255,0.22)"
+            stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <div class="sil-legend" id="sil-legend"></div>
+      <div class="score-bars"  id="score-bars"></div>
+    </div>
+
+    <div class="summary-card">
+      <p class="summary-card-title" id="summary-title"></p>
+      <p class="summary-card-text"  id="summary-text"></p>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn-outline" onclick="startQuiz()"         data-i18n="resultsRetake">Retake test</button>
+      <button class="btn-solid"   onclick="showScreen('guide')" data-i18n="resultsGuide">Explore color guide</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span data-i18n="footer">Inspired by Surrounded by Idiots · Thomas Erikson · For educational purposes only</span>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   UI TRANSLATIONS
+   All data-i18n elements are updated by setLang().
+   JS-rendered strings access UI[currentLang].keyName.
+═══════════════════════════════════════════════════════════ */
+var UI = {
+  en: {
+    navLogo:'Surrounded by Idiots', navHome:'Home', navGuide:'Color Guide',
+    landingEyebrow:'Personality test',
+    landingLine1:'Discover your', landingLine2:'personality', landingLine3:'color.',
+    landingCta:'Begin the test',
+    chipRed:'Red · Dominant', chipYellow:'Yellow · Inspiring',
+    chipGreen:'Green · Stable', chipBlue:'Blue · Analytical',
+    landingAttrib:'Inspired by "Surrounded by Idiots" by Thomas Erikson. Results are for self-reflection only.',
+    guideEyebrow:'Color Guide', guideTitle:'The four personalities',
+    guideSubtitle:'Core traits, real-world archetypes, and what each color fundamentally represents.',
+    guideCta:'Take the test →',
+    quizLabel:'Question', quizContinue:'Continue',
+    resultsEyebrow:'Your personality profile',
+    blendLabel:'Personality silhouette', resultsDominant:'Dominant',
+    resultsRetake:'Retake test', resultsGuide:'Explore color guide',
+    footer:'Inspired by Surrounded by Idiots · Thomas Erikson · For educational purposes only',
+    celebArchetypes:'Real-world archetypes'
+  },
+  ru: {
+    navLogo:'Окружён идиотами', navHome:'Главная', navGuide:'Гид по цветам',
+    landingEyebrow:'Тест личности',
+    landingLine1:'Узнай свой', landingLine2:'цвет', landingLine3:'личности.',
+    landingCta:'Начать тест',
+    chipRed:'Красный · Доминирующий', chipYellow:'Жёлтый · Вдохновляющий',
+    chipGreen:'Зелёный · Стабильный', chipBlue:'Синий · Аналитический',
+    landingAttrib:'По мотивам «Окружён идиотами» Томаса Эриксона. Результаты носят ознакомительный характер.',
+    guideEyebrow:'Гид по цветам', guideTitle:'Четыре типа личности',
+    guideSubtitle:'Ключевые черты, реальные прототипы и суть каждого цветового типа.',
+    guideCta:'Пройти тест →',
+    quizLabel:'Вопрос', quizContinue:'Далее',
+    resultsEyebrow:'Ваш профиль личности',
+    blendLabel:'Силуэт личности', resultsDominant:'Доминирующий',
+    resultsRetake:'Пройти снова', resultsGuide:'Гид по цветам',
+    footer:'По мотивам «Окружён идиотами» · Томас Эриксон · Только для образовательных целей',
+    celebArchetypes:'Реальные прототипы'
+  }
+};
+
+var currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (UI[lang][key] !== undefined) el.textContent = UI[lang][key];
+  });
+  document.documentElement.lang = lang;
+  var guideEl   = document.getElementById('screen-guide');
+  var quizEl    = document.getElementById('screen-quiz');
+  var resultsEl = document.getElementById('screen-results');
+  if (!guideEl.classList.contains('hidden'))   renderGuide();
+  if (!quizEl.classList.contains('hidden'))    refreshQuizText();
+  if (!resultsEl.classList.contains('hidden') && lastSorted) renderResults(lastSorted);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COLOR DATA
+   ─────────────────────────────────────────────────────────
+   CRITICAL RULE: label, archetype, summary, and traits are
+   ALL bilingual objects {en:'...', ru:'...'}.
+   Every JS access uses colorObj.label[L], .archetype[L], etc.
+   There are zero flat strings for any translatable field.
+
+   CELEBRITY PHOTOS:
+   Five celebrities use the exact Unsplash URLs specified.
+   The rest use stable Wikimedia thumbnail URLs.
+   Each <img src="..."> loads directly; the initials div
+   after it is display:none and only appears on img error.
+═══════════════════════════════════════════════════════════ */
+var COLORS = {
+  red: {
+    key: 'red',
+    hex: '#C0392B', light: '#FDECEA',
+    border: 'rgba(192,57,43,0.2)', textColor: '#C0392B',
+    label:     { en: 'Red',    ru: 'Красный' },
+    archetype: { en: 'Dominant · Direct · Decisive', ru: 'Доминирующий · Прямой · Решительный' },
+    summary: {
+      en: 'Red personalities are driven by results, power, and speed. They are natural leaders who thrive in high-pressure environments and make bold decisions without hesitation. Their superpower is relentless forward momentum. Their blind spot is impatience with people who need time to think or deliberate.',
+      ru: 'Красные личности движимы результатами, властью и скоростью. Прирождённые лидеры, процветающие под давлением. Их суперсила — неудержимое движение вперёд. Слепое пятно — нетерпение к тем, кому нужно время обдумать решение.'
+    },
+    traits: {
+      en: ['Results-driven','Competitive','Direct','Decisive','Ambitious','Impatient','Bold'],
+      ru: ['Нацелен на результат','Конкурентный','Прямолинейный','Решительный','Амбициозный','Нетерпеливый','Смелый']
+    },
+    celebrities: [
+      {
+        name: 'Steve Jobs',
+        achievement: { en: 'Co-founder of Apple', ru: 'Сооснователь Apple' },
+        note: { en: 'Relentless perfectionist and visionary driver', ru: 'Неутомимый перфекционист и провидец' },
+        photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
+        initials: 'SJ'
+      },
+      {
+        name: 'Margaret Thatcher',
+        achievement: { en: 'Former Prime Minister, United Kingdom', ru: 'Экс-премьер-министр Великобритании' },
+        note: { en: 'Iron will, zero compromise', ru: 'Железная воля, никаких компромиссов' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Margaret_Thatcher_stock_portrait_%28cropped%29.jpg/240px-Margaret_Thatcher_stock_portrait_%28cropped%29.jpg',
+        initials: 'MT'
+      },
+      {
+        name: 'Elon Musk',
+        achievement: { en: 'CEO of Tesla and SpaceX', ru: 'CEO Tesla и SpaceX' },
+        note: { en: 'Intense, goal-obsessed disruptor', ru: 'Интенсивный новатор, одержимый целями' },
+        photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+        initials: 'EM'
+      },
+      {
+        name: 'Gordon Ramsay',
+        achievement: { en: 'Michelin-star chef and TV host', ru: 'Шеф со звёздами Мишлен и TV-ведущий' },
+        note: { en: 'Direct, demanding, sky-high standards', ru: 'Прямой, требовательный, запредельные стандарты' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gordon_Ramsay.jpg/240px-Gordon_Ramsay.jpg',
+        initials: 'GR'
+      }
+    ]
+  },
+
+  yellow: {
+    key: 'yellow',
+    hex: '#D4AC0D', light: '#FEFDE8',
+    border: 'rgba(212,172,13,0.25)', textColor: '#9A7D0A',
+    label:     { en: 'Yellow', ru: 'Жёлтый' },
+    archetype: { en: 'Inspiring · Creative · Social', ru: 'Вдохновляющий · Творческий · Общительный' },
+    summary: {
+      en: 'Yellow personalities radiate energy, optimism, and creativity. Natural cheerleaders and storytellers, they inspire others through sheer enthusiasm. Their superpower is infectious motivation. Their blind spot is a tendency to start more than they finish.',
+      ru: 'Жёлтые личности излучают энергию, оптимизм и творчество. Прирождённые вдохновители, заряжающие других энтузиазмом. Их суперсила — заразительная мотивация. Слабое место — склонность начинать больше, чем заканчивать.'
+    },
+    traits: {
+      en: ['Enthusiastic','Creative','Persuasive','Optimistic','Spontaneous','Talkative','Playful'],
+      ru: ['Энтузиаст','Творческий','Убедительный','Оптимистичный','Спонтанный','Общительный','Игривый']
+    },
+    celebrities: [
+      {
+        name: 'Jim Carrey',
+        achievement: { en: 'Actor and comedian', ru: 'Актёр и комик' },
+        note: { en: 'Unbounded energy and creative expression', ru: 'Неограниченная энергия и творческое самовыражение' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Jim_Carrey_2008.jpg/240px-Jim_Carrey_2008.jpg',
+        initials: 'JC'
+      },
+      {
+        name: 'Robin Williams',
+        achievement: { en: 'Oscar-winning actor and comedian', ru: 'Актёр-лауреат Оскара и комик' },
+        note: { en: 'Spontaneous genius, pure joy', ru: 'Спонтанный гений, чистая радость' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Robin_Williams_2011a_%282%29.jpg/240px-Robin_Williams_2011a_%282%29.jpg',
+        initials: 'RW'
+      },
+      {
+        name: 'Oprah Winfrey',
+        achievement: { en: 'Media mogul and philanthropist', ru: 'Медиамагнат и меценат' },
+        note: { en: 'Warm, inspiring, endlessly connected', ru: 'Тёплая, вдохновляющая, безгранично коммуникабельная' },
+        photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+        initials: 'OW'
+      },
+      {
+        name: 'Will Smith',
+        achievement: { en: 'Actor, rapper and producer', ru: 'Актёр, рэпер и продюсер' },
+        note: { en: 'Charming, optimistic people-magnet', ru: 'Обаятельный, оптимистичный магнит для людей' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Will_Smith_2011.jpg/240px-Will_Smith_2011.jpg',
+        initials: 'WS'
+      }
+    ]
+  },
+
+  green: {
+    key: 'green',
+    hex: '#1E8449', light: '#E9F7EF',
+    border: 'rgba(30,132,73,0.2)', textColor: '#1E8449',
+    label:     { en: 'Green', ru: 'Зелёный' },
+    archetype: { en: 'Stable · Patient · Empathetic', ru: 'Стабильный · Терпеливый · Эмпатичный' },
+    summary: {
+      en: 'Green personalities are the quiet foundation beneath every high-functioning team. Patient, loyal, and deeply empathetic, they create the psychological safety that allows others to take risks. Their superpower is building bonds that last. Their blind spot is reluctance to assert their own needs.',
+      ru: 'Зелёные личности — тихий фундамент любой высокоэффективной команды. Терпеливые, лояльные и глубоко эмпатичные, они создают психологическую безопасность. Их суперсила — создание прочных связей. Слабое место — нежелание отстаивать собственные потребности.'
+    },
+    traits: {
+      en: ['Patient','Loyal','Empathetic','Reliable','Harmonious','Steady','Supportive'],
+      ru: ['Терпеливый','Лояльный','Эмпатичный','Надёжный','Гармоничный','Устойчивый','Поддерживающий']
+    },
+    celebrities: [
+      {
+        name: 'Keanu Reeves',
+        achievement: { en: 'Actor — The Matrix, John Wick', ru: 'Актёр — Матрица, Джон Уик' },
+        note: { en: 'Calm, kind, universally beloved', ru: 'Спокойный, добрый, всеобщий любимец' },
+        photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+        initials: 'KR'
+      },
+      {
+        name: 'Fred Rogers',
+        achievement: { en: 'Host of Mister Rogers Neighborhood', ru: 'Ведущий «Соседства мистера Роджерса»' },
+        note: { en: 'Gentle, patient, nurturing warmth', ru: 'Мягкий, терпеливый, заботливая теплота' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Fred_Rogers%2C_late_1960s.jpg/240px-Fred_Rogers%2C_late_1960s.jpg',
+        initials: 'FR'
+      },
+      {
+        name: 'Nelson Mandela',
+        achievement: { en: 'Former President of South Africa', ru: 'Экс-президент ЮАР' },
+        note: { en: 'Patient, forgiving, unshakeable resolve', ru: 'Терпеливый, всепрощающий, несгибаемый' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Nelson_Mandela_1994.jpg/240px-Nelson_Mandela_1994.jpg',
+        initials: 'NM'
+      },
+      {
+        name: 'Dolly Parton',
+        achievement: { en: 'Country music icon and philanthropist', ru: 'Икона кантри-музыки и меценат' },
+        note: { en: 'Warm, steady, generous to all', ru: 'Тёплая, надёжная, щедрая ко всем' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Dolly_Parton_in_1978.jpg/240px-Dolly_Parton_in_1978.jpg',
+        initials: 'DP'
+      }
+    ]
+  },
+
+  blue: {
+    key: 'blue',
+    hex: '#1A5276', light: '#EBF5FB',
+    border: 'rgba(26,82,118,0.2)', textColor: '#1A5276',
+    label:     { en: 'Blue', ru: 'Синий' },
+    archetype: { en: 'Analytical · Structured · Precise', ru: 'Аналитический · Структурированный · Точный' },
+    summary: {
+      en: 'Blue personalities are the architects of accuracy. Methodical, systematic, and thorough, they catch errors others miss and build systems that outlast everyone. Their superpower is precision under pressure. Their blind spot is analysis paralysis.',
+      ru: 'Синие личности — архитекторы точности. Методичные, системные и тщательные, они замечают ошибки, которые другие упускают. Их суперсила — точность под давлением. Слабое место — паралич анализа.'
+    },
+    traits: {
+      en: ['Analytical','Detail-oriented','Systematic','Precise','Reserved','Thorough','Logical'],
+      ru: ['Аналитический','Внимательный к деталям','Системный','Точный','Сдержанный','Тщательный','Логичный']
+    },
+    celebrities: [
+      {
+        name: 'Bill Gates',
+        achievement: { en: 'Co-founder of Microsoft', ru: 'Сооснователь Microsoft' },
+        note: { en: 'Systems thinker, meticulous planner', ru: 'Системный мыслитель, дотошный планировщик' },
+        photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+        initials: 'BG'
+      },
+      {
+        name: 'Albert Einstein',
+        achievement: { en: 'Nobel Laureate in Physics', ru: 'Лауреат Нобелевской премии по физике' },
+        note: { en: 'Deep focus, first-principles reasoning', ru: 'Глубокая концентрация, рассуждение от первых принципов' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Albert_Einstein_Head.jpg/240px-Albert_Einstein_Head.jpg',
+        initials: 'AE'
+      },
+      {
+        name: 'Warren Buffett',
+        achievement: { en: 'Chairman and CEO, Berkshire Hathaway', ru: 'Председатель и CEO Berkshire Hathaway' },
+        note: { en: 'Patient, data-driven, disciplined', ru: 'Терпеливый, опирающийся на данные, дисциплинированный' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Warren_Buffett_KU_Visit.jpg/240px-Warren_Buffett_KU_Visit.jpg',
+        initials: 'WB'
+      },
+      {
+        name: 'Marie Curie',
+        achievement: { en: 'Two-time Nobel Laureate', ru: 'Двукратный лауреат Нобелевской премии' },
+        note: { en: 'Relentless rigour and methodical brilliance', ru: 'Неустанная строгость и методичный блеск' },
+        photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Marie_Curie_c1920.jpg/240px-Marie_Curie_c1920.jpg',
+        initials: 'MC'
+      }
+    ]
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   QUESTIONS (12)
+   Every translatable field is {en:'...', ru:'...'}.
+   color is a plain string — it is never displayed, only used
+   for scoring, so it needs no translation.
+═══════════════════════════════════════════════════════════ */
+var QUESTIONS = [
+  {
+    scenario: { en:'At work', ru:'На работе' },
+    text: {
+      en:'A major project deadline has been moved up by two weeks. Your immediate instinct is to…',
+      ru:'Крайний срок важного проекта сдвинули на две недели вперёд. Ваш первый порыв…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Take charge right away: assign tasks, cut scope, and push the team to move faster.', ru:'Взять управление немедленно: распределить задачи, урезать объём и подтолкнуть команду двигаться быстрее.' }},
+      { color:'yellow', text:{ en:"Call an all-hands, rally the team's energy, and brainstorm creative shortcuts together.", ru:'Собрать всех, зарядить команду энергией и совместно придумать творческие решения.' }},
+      { color:'green',  text:{ en:'Quietly check in with each team member to understand their stress and offer support.', ru:'Тихо поговорить с каждым членом команды, понять их стресс и предложить поддержку.' }},
+      { color:'blue',   text:{ en:'Sit down alone, map out a revised timeline, and identify every risk before saying a word.', ru:'Сесть в одиночестве, составить пересмотренный план и выявить каждый риск прежде чем говорить.' }}
+    ]
+  },
+  {
+    scenario: { en:'In conflict', ru:'В конфликте' },
+    text: {
+      en:'A colleague repeatedly interrupts you in meetings. You handle it by…',
+      ru:'Коллега раз за разом перебивает вас на совещаниях. Вы реагируете…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Addressing it head-on the next time it happens and telling them clearly to let you finish.', ru:'При следующем случае прямо сказать, чтобы дали вам договорить.' }},
+      { color:'yellow', text:{ en:'Making a light joke to defuse the tension, then having a relaxed chat afterward.', ru:'Разрядить напряжение лёгкой шуткой, а потом поговорить неформально.' }},
+      { color:'green',  text:{ en:'Letting it go to preserve the harmony, even though it quietly bothers you.', ru:'Промолчать ради сохранения гармонии, хотя внутри это задевает.' }},
+      { color:'blue',   text:{ en:'Documenting the pattern and raising it with your manager with specific dated examples.', ru:'Зафиксировать факты и обратиться к руководителю с конкретными датированными примерами.' }}
+    ]
+  },
+  {
+    scenario: { en:'Decision making', ru:'Принятие решений' },
+    text: {
+      en:'You have two job offers to choose between. How do you decide?',
+      ru:'У вас два предложения о работе. Как вы выбираете?'
+    },
+    options: [
+      { color:'red',    text:{ en:'Go with whichever role gives you more authority and a faster path to the top.', ru:'Выбрать роль с большими полномочиями и более быстрым путём к вершине.' }},
+      { color:'yellow', text:{ en:'Pick the team and culture that feels the most fun, vibrant, and socially energetic.', ru:'Выбрать команду и культуру, которая кажется наиболее живой и яркой.' }},
+      { color:'green',  text:{ en:'Choose the one where you will feel secure and where the people seem genuinely kind.', ru:'Выбрать место, где вы будете в безопасности и где люди искренне добры.' }},
+      { color:'blue',   text:{ en:'Build a detailed comparison covering salary, benefits, growth trajectory, and risk.', ru:'Составить детальное сравнение по зарплате, льготам, перспективам роста и рискам.' }}
+    ]
+  },
+  {
+    scenario: { en:'Under pressure', ru:'Под давлением' },
+    text: {
+      en:'You are presenting to senior leadership and realise you have made an error in your slides. You…',
+      ru:'Вы делаете презентацию для руководства и замечаете ошибку в слайдах. Вы…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Own it immediately, correct it out loud, and keep going without breaking pace.', ru:'Тут же признать ошибку, громко поправить её и продолжить без потери темпа.' }},
+      { color:'yellow', text:{ en:'Laugh it off with a self-deprecating comment and move on without making it a big deal.', ru:'Обыграть это самоиронией и двигаться дальше, не раздувая проблему.' }},
+      { color:'green',  text:{ en:'Feel your heart sink, but carry on calmly and worry about it afterward.', ru:'Почувствовать, как сердце уходит в пятки, но спокойно продолжить и переживать позже.' }},
+      { color:'blue',   text:{ en:'Stop, acknowledge the error precisely, state the correct figure, and then continue.', ru:'Остановиться, точно обозначить ошибку, назвать правильные данные и продолжить.' }}
+    ]
+  },
+  {
+    scenario: { en:'Social settings', ru:'Социальные ситуации' },
+    text: {
+      en:'You arrive alone at a large networking event where you know nobody. You…',
+      ru:'Вы пришли один на большой нетворкинг-ивент, где никого не знаете. Вы…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Walk straight up to the most influential person in the room and introduce yourself with purpose.', ru:'Сразу направиться к самому влиятельному человеку и целенаправленно представиться.' }},
+      { color:'yellow', text:{ en:'Dive into conversations enthusiastically. This is your natural habitat.', ru:'С энтузиазмом включиться в разговоры. Это ваша стихия.' }},
+      { color:'green',  text:{ en:'Find one person who also looks uncertain and build a genuine one-on-one connection.', ru:'Найти человека, который тоже выглядит неуверенно, и установить искренний контакт.' }},
+      { color:'blue',   text:{ en:'Observe the room carefully, then approach the person most relevant to your professional goals.', ru:'Внимательно осмотреть зал, затем подойти к наиболее профессионально значимому человеку.' }}
+    ]
+  },
+  {
+    scenario: { en:'Receiving feedback', ru:'Получение обратной связи' },
+    text: {
+      en:'Someone gives you critical feedback on work you are genuinely proud of. Your first reaction is…',
+      ru:'Кто-то критикует вашу работу, которой вы по-настоящему гордитесь. Первая реакция…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Push back if you disagree. You are not afraid to defend your choices.', ru:'Возразить, если не согласны. Вы не боитесь отстаивать свои решения.' }},
+      { color:'yellow', text:{ en:'Thank them enthusiastically and immediately spin it into something positive.', ru:'Горячо поблагодарить и тут же переосмыслить это как нечто позитивное.' }},
+      { color:'green',  text:{ en:'Feel hurt on the inside, but smile graciously and absorb every word.', ru:'Почувствовать обиду внутри, но мягко улыбнуться и впитать каждое слово.' }},
+      { color:'blue',   text:{ en:'Ask a series of precise follow-up questions to fully understand their reasoning.', ru:'Задать ряд точных уточняющих вопросов, чтобы полностью понять логику критика.' }}
+    ]
+  },
+  {
+    scenario: { en:'Free time at work', ru:'Свободное время на работе' },
+    text: {
+      en:'Your team has a full week of unstructured time to work on anything. You…',
+      ru:'У вашей команды есть целая неделя неструктурированного времени. Вы…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Identify the highest-impact project and push the team to execute it.', ru:'Определить самый значимый проект и подтолкнуть команду к его реализации.' }},
+      { color:'yellow', text:{ en:'Organise a lively brainstorm and get everyone excited about something new.', ru:'Организовать живой мозговой штурм и зажечь всех чем-то новым.' }},
+      { color:'green',  text:{ en:'Ask the team what they actually need. Sometimes they just need rest.', ru:'Спросить команду, что им действительно нужно. Иногда это просто отдых.' }},
+      { color:'blue',   text:{ en:'Use the time to research and fix underlying problems no one has tackled yet.', ru:'Использовать время на исследование и устранение глубинных проблем.' }}
+    ]
+  },
+  {
+    scenario: { en:'Leadership style', ru:'Стиль лидерства' },
+    text: {
+      en:'As a leader, what would your team say matters most to you?',
+      ru:'Как лидер, что бы ваша команда назвала самым важным для вас?'
+    },
+    options: [
+      { color:'red',    text:{ en:'"Results. They push us hard and hold everyone accountable."', ru:'«Результаты. Они требуют от нас максимума и добиваются ответственности от каждого.»' }},
+      { color:'yellow', text:{ en:'"Enthusiasm. They make the work exciting and never let the energy drop."', ru:'«Энтузиазм. Они делают работу захватывающей и не дают энергии угасать.»' }},
+      { color:'green',  text:{ en:'"People. They genuinely care how each of us is doing."', ru:'«Люди. Им искренне важно, как чувствует себя каждый из нас.»' }},
+      { color:'blue',   text:{ en:'"Standards. They care deeply about quality and doing things the right way."', ru:'«Стандарты. Им очень важны качество и правильный подход к делу.»' }}
+    ]
+  },
+  {
+    scenario: { en:'When things go wrong', ru:'Когда что-то идёт не так' },
+    text: {
+      en:'A project you led has failed publicly. Your first instinct is to…',
+      ru:'Проект под вашим руководством провалился публично. Первый порыв…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Take accountability fast, regroup the team, and begin fixing it immediately.', ru:'Быстро взять ответственность, перегруппировать команду и немедленно начать исправлять.' }},
+      { color:'yellow', text:{ en:"Reframe the narrative: find the learning and keep everyone's spirits high.", ru:'Переосмыслить ситуацию: найти урок и поддержать боевой дух команды.' }},
+      { color:'green',  text:{ en:'Check in on how the team is feeling before anything else.', ru:'Прежде всего проверить, как чувствует себя команда.' }},
+      { color:'blue',   text:{ en:'Conduct a thorough root-cause analysis before drawing any conclusions.', ru:'Провести тщательный анализ первопричин, прежде чем делать выводы.' }}
+    ]
+  },
+  {
+    scenario: { en:'Problem solving', ru:'Решение проблем' },
+    text: {
+      en:'Your team is stuck on a hard problem with no obvious answer. You tend to…',
+      ru:'Ваша команда застряла на сложной задаче без очевидного решения. Вы обычно…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Make a call with the best available information and adjust course as you go.', ru:'Принять решение на основе лучшей имеющейся информации и корректировать курс по ходу.' }},
+      { color:'yellow', text:{ en:'Bring people together and trust that group energy will find a path.', ru:'Собрать людей вместе и верить, что групповая энергия найдёт выход.' }},
+      { color:'green',  text:{ en:'Create a calm space for the quieter voices. The answer is often already in the room.', ru:'Создать спокойную атмосферу для тихих голосов. Ответ часто уже есть в команде.' }},
+      { color:'blue',   text:{ en:'Break the problem into components, gather more data, and work through it step by step.', ru:'Разбить проблему на составляющие, собрать больше данных и работать методично.' }}
+    ]
+  },
+  {
+    scenario: { en:'Rules and policies', ru:'Правила и политики' },
+    text: {
+      en:'There is an outdated company policy slowing your team down. You…',
+      ru:'В компании есть устаревшая политика, тормозящая вашу команду. Вы…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Push leadership to change it and keep pushing until something moves.', ru:'Давить на руководство и не останавливаться, пока ситуация не сдвинется.' }},
+      { color:'yellow', text:{ en:'Rally others who feel the same and build enthusiasm for changing it.', ru:'Объединить единомышленников и создать волну энтузиазма за перемены.' }},
+      { color:'green',  text:{ en:'Work within it for now. You do not want to cause friction.', ru:'Пока работать в её рамках. Вы не хотите создавать трений.' }},
+      { color:'blue',   text:{ en:'Draft a detailed proposal with data and rationale, then present through the right channels.', ru:'Составить детальное предложение с данными и представить по нужным каналам.' }}
+    ]
+  },
+  {
+    scenario: { en:'After a draining week', ru:'После изматывающей недели' },
+    text: {
+      en:'It is Friday evening. The week has been exhausting. To recharge, you…',
+      ru:'Пятничный вечер. Неделя была изматывающей. Чтобы восстановиться, вы…'
+    },
+    options: [
+      { color:'red',    text:{ en:'Use the weekend to get ahead on something important.', ru:'Используете выходные, чтобы продвинуться вперёд в чём-то важном.' }},
+      { color:'yellow', text:{ en:'Call friends, make plans, and fill the weekend with people and experiences.', ru:'Звоните друзьям, строите планы и наполняете выходные людьми и впечатлениями.' }},
+      { color:'green',  text:{ en:'Spend quiet time with the people closest to you.', ru:'Проводите тихое время с самыми близкими.' }},
+      { color:'blue',   text:{ en:'Have time alone to read, think, and process. Solitude restores you.', ru:'Уединяетесь, чтобы читать, думать и осмыслять. Одиночество восстанавливает.' }}
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════════════════════
+   BLEND SUMMARIES
+   title and text are {en:'...', ru:'...'} — accessed as blend.title[L].
+═══════════════════════════════════════════════════════════ */
+var BLEND_SUMMARIES = {
+  'red-yellow':    { title:{ en:'The Energetic Commander',   ru:'Энергичный командир' },    text:{ en:'You combine relentless drive with infectious enthusiasm. You can mobilise a room in minutes and execute on a vision with extraordinary speed. Watch your tendency to move so fast that details slip.',                                                                       ru:'Вы сочетаете неудержимую энергию с заразительным энтузиазмом. Вы способны мобилизовать команду за минуты. Следите, чтобы детали не ускользали в спешке.' }},
+  'red-blue':      { title:{ en:'The Precise Director',      ru:'Точный директор' },         text:{ en:'You drive hard for results and need those results to be correct. This rare combination makes you a formidable leader who thinks strategically and executes decisively.',                                                                                                  ru:'Вы напористо добиваетесь результатов и требуете их точности. Это редкое сочетание делает вас грозным лидером, мыслящим стратегически и действующим решительно.' }},
+  'red-green':     { title:{ en:'The Assertive Protector',   ru:'Настойчивый защитник' },    text:{ en:'You push hard toward your goals but ultimately do so in service of the people around you. You fight fiercely for your team yet remain more sensitive to feelings than a typical Red.',                                                                                   ru:'Вы настойчиво стремитесь к целям, но ради людей вокруг. Яростно сражаетесь за команду и при этом чувствительнее к эмоциям, чем типичный Красный.' }},
+  'yellow-red':    { title:{ en:'The Charismatic Driver',    ru:'Харизматичный движитель' }, text:{ en:'You are the rare person who is both the life of the party and gets things done. Your energy is magnetic and your ambition is real. Just make sure you deliver on your bold promises.',                                                                                   ru:'Вы — редкий человек, который одновременно душа компании и добивается результатов. Ваша энергия магнетична. Только выполняйте смелые обещания.' }},
+  'yellow-green':  { title:{ en:'The Warmhearted Inspirer',  ru:'Сердечный вдохновитель' },  text:{ en:'You are the soul of every team. Deeply social and genuinely caring, you inspire through warmth rather than authority. People trust you completely. Your challenge is learning to say no without guilt.',                                                                  ru:'Вы — душа любой команды. Вдохновляете теплотой, а не авторитетом. Вам полностью доверяют. Ваша задача — научиться говорить «нет» без чувства вины.' }},
+  'yellow-blue':   { title:{ en:'The Creative Analyst',      ru:'Творческий аналитик' },     text:{ en:'You dream big but insist on rigour. This balance between inspiration and precision is rare and valuable. Guard against overthinking killing your natural creative momentum.',                                                                                             ru:'Вы мечтаете о большом, но настаиваете на строгости. Этот баланс редок и ценен. Берегитесь, чтобы чрезмерный анализ не убил ваш творческий порыв.' }},
+  'green-yellow':  { title:{ en:'The Empathetic Connector',  ru:'Эмпатичный коннектор' },    text:{ en:'You are powered by deep human connection. Warm, patient, and genuinely curious, you build the kind of trust that takes others years to earn.',                                                                                                                         ru:'Вас питают глубокие человеческие связи. Тёплый, терпеливый и искренне любопытный, вы создаёте доверие, на которое другим нужны годы.' }},
+  'green-red':     { title:{ en:'The Protective Leader',     ru:'Защитный лидер' },           text:{ en:'You lead through loyalty and care, but when pushed you can be surprisingly decisive. People feel safe with you because you would go to the mat for them.',                                                                                                              ru:'Вы ведёте через лояльность и заботу, но при необходимости проявляете неожиданную решительность. Рядом с вами люди чувствуют себя в безопасности.' }},
+  'green-blue':    { title:{ en:'The Careful Guardian',      ru:'Осторожный хранитель' },    text:{ en:'You are meticulous, loyal, and deeply reliable. You think before you speak and act with deliberate care. Your challenge is accepting that good enough is sometimes enough.',                                                                                            ru:'Вы методичны, лояльны и глубоко надёжны. Думаете, прежде чем говорить. Ваша задача — принять, что «достаточно хорошо» иногда достаточно.' }},
+  'blue-red':      { title:{ en:'The Strategic Commander',   ru:'Стратегический командир' }, text:{ en:'You combine analytical depth with executive decisiveness. You do not act without data, but once you have it, you move fast. Just remember to bring people along.',                                                                                                       ru:'Вы сочетаете аналитическую глубину с решительностью. Не действуете без данных, но получив их — движетесь быстро. Только не забывайте вести людей за собой.' }},
+  'blue-yellow':   { title:{ en:'The Inventive Architect',   ru:'Изобретательный архитектор' }, text:{ en:'You design elegant systems that actually get people excited. You make data compelling and explain complexity clearly. Most analytical thinkers cannot do that.',                                                                                                       ru:'Вы создаёте элегантные системы, которые увлекают людей. Делаете данные убедительными и объясняете сложное доступно.' }},
+  'blue-green':    { title:{ en:'The Thoughtful Planner',    ru:'Вдумчивый планировщик' },   text:{ en:'You move deliberately, build carefully, and care deeply about both quality and people. Your plans work and your colleagues feel valued. Trust your instincts more.',                                                                                                      ru:'Вы движетесь осмысленно, строите тщательно и заботитесь о качестве и людях. Ваши планы работают. Больше доверяйте своей интуиции.' }},
+  'red-red':       { title:{ en:'The Pure Red',              ru:'Чистый Красный' },           text:{ en:'You are the quintessential results-driven, no-nonsense leader. Unambiguous, fast-moving, and outcome-focused. Your greatest growth edge is practising empathy and slowing down enough to bring people with you.',                                                       ru:'Вы — квинтэссенция лидера, ориентированного на результат. Ваш главный рост — развивать эмпатию и достаточно замедляться, чтобы вести людей за собой.' }},
+  'yellow-yellow': { title:{ en:'The Pure Yellow',           ru:'Чистый Жёлтый' },            text:{ en:'You are an irresistible force of creative energy and social warmth. Life is an adventure and people are the fuel. Your growth challenge is follow-through: finishing what your enthusiasm starts.',                                                                      ru:'Вы — неудержимая сила творческой энергии. Ваш вызов — доводить начатое до конца: заканчивать то, что начинает ваш энтузиазм.' }},
+  'green-green':   { title:{ en:'The Pure Green',            ru:'Чистый Зелёный' },           text:{ en:"You are the world's most reliable and deeply caring personality. Your growth challenge is advocating for your own needs with the same fierce energy you invest in everyone else's.",                                                                                     ru:'Вы — самая надёжная и глубоко заботливая личность. Ваш вызов — отстаивать собственные потребности с той же энергией, что вкладываете в других.' }},
+  'blue-blue':     { title:{ en:'The Pure Blue',             ru:'Чистый Синий' },             text:{ en:"You are the architect of precision. Where others guess, you measure. Where others rush, you plan. Challenge yourself to make decisions with 80 percent of the data. Perfection's enemy is progress.",                                                                    ru:'Вы — архитектор точности. Бросьте себе вызов: принимайте решения при 80% данных. Враг совершенства — прогресс.' }}
+};
+
+/* ═══════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════ */
+var scores          = { red:0, yellow:0, green:0, blue:0 };
+var current         = 0;
+var selected        = null;   /* color key of chosen option or null */
+var lastSorted      = null;   /* saved for lang-switch re-render */
+var currentShuffled = [];     /* shuffled option array for active question */
+
+/* Fisher-Yates in-place shuffle — returns new array */
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════════ */
+function showScreen(name) {
+  ['landing','guide','quiz','results'].forEach(function(s) {
+    document.getElementById('screen-' + s).classList.add('hidden');
+  });
+  document.getElementById('screen-' + name).classList.remove('hidden');
+  document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  var map = { landing:'nav-home', guide:'nav-guide', quiz:'nav-home', results:'nav-home' };
+  var nb = document.getElementById(map[name]);
+  if (nb) nb.classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+  if (name === 'guide') renderGuide();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GUIDE — render color cards with celebrity photos
+═══════════════════════════════════════════════════════════ */
+function renderGuide() {
+  var L = currentLang;
+  var grid = document.getElementById('guide-grid');
+  grid.innerHTML = '';
+
+  Object.keys(COLORS).forEach(function(key, i) {
+    var c = COLORS[key];
+
+    var pills = c.traits[L].map(function(t) {
+      return '<li><span class="trait-pill" style="background:' + c.light + ';color:' + c.textColor + ';border-color:' + c.border + ';">' + t + '</span></li>';
+    }).join('');
+
+    var celebHTML = c.celebrities.map(function(cel) {
+      /*
+        <img> src points to the real Unsplash/Wikimedia URL.
+        The .celeb-initials div after it is display:none by default.
+        onerror hides the broken img and shows the initials div.
+      */
+      return (
+        '<div class="celeb-card">' +
+          '<div class="celeb-card-top">' +
+            '<img class="celeb-photo"' +
+              ' src="' + cel.photo + '"' +
+              ' alt="' + cel.name + '"' +
+              ' loading="lazy"' +
+              ' onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
+            '<div class="celeb-initials" style="background:' + c.hex + ';">' + cel.initials + '</div>' +
+            '<div class="celeb-name-block">' +
+              '<div class="celeb-name">' + cel.name + '</div>' +
+              '<span class="celeb-badge" style="background:' + c.light + ';color:' + c.textColor + ';border:1px solid ' + c.border + ';">' + cel.achievement[L] + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<p class="celeb-note">' + cel.note[L] + '</p>' +
+        '</div>'
+      );
+    }).join('');
+
+    var card = document.createElement('div');
+    card.className = 'guide-card slide-up';
+    card.style.animationDelay = (i * 0.08) + 's';
+    card.style.opacity = '0';
+    card.innerHTML = (
+      '<div class="guide-card-banner" style="background:' + c.hex + ';"></div>' +
+      '<div class="guide-card-header">' +
+        '<div class="guide-color-icon" style="background:' + c.hex + ';">' + c.label[L][0] + '</div>' +
+        '<div class="guide-card-head-text">' +
+          '<div class="guide-card-title" style="color:' + c.textColor + ';">' + c.label[L] + '</div>' +
+          '<div class="guide-card-archetype">' + c.archetype[L] + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<p class="guide-card-description">' + c.summary[L] + '</p>' +
+      '<div class="guide-card-body">' +
+        '<ul class="trait-list">' + pills + '</ul>' +
+        '<p class="celeb-section-label">' + UI[L].celebArchetypes + '</p>' +
+        '<div class="celebrity-grid">' + celebHTML + '</div>' +
+      '</div>'
+    );
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   QUIZ ENGINE
+═══════════════════════════════════════════════════════════ */
+function startQuiz() {
+  scores = { red:0, yellow:0, green:0, blue:0 };
+  current = 0;
+  selected = null;
+  lastSorted = null;
+  currentShuffled = [];
+  showScreen('quiz');
+  renderQuestion();
+}
+
+var LETTERS = ['A','B','C','D'];
+
+function renderQuestion() {
+  var L = currentLang;
+  var q   = QUESTIONS[current];
+  var pct = ((current + 1) / QUESTIONS.length) * 100;
+
+  document.getElementById('progress-count').textContent = (current + 1) + ' / ' + QUESTIONS.length;
+  document.getElementById('progress-fill').style.width  = pct + '%';
+  document.getElementById('q-scenario').textContent     = q.scenario[L];
+  document.getElementById('q-text').textContent         = q.text[L];
+
+  var card = document.getElementById('question-card');
+  card.classList.remove('fade-in');
+  void card.offsetWidth;
+  card.classList.add('fade-in');
+
+  currentShuffled = shuffle(q.options);
+  buildOptionButtons(currentShuffled, L);
+  selected = null;
+  document.getElementById('next-btn').disabled = true;
+}
+
+function buildOptionButtons(opts, L) {
+  var list = document.getElementById('options-list');
+  list.innerHTML = '';
+  opts.forEach(function(opt, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.style.opacity = '0';
+    btn.innerHTML = '<span class="option-letter">' + LETTERS[idx] + '</span><span>' + opt.text[L] + '</span>';
+    /* Scoring uses opt.color (string), NOT the display letter.
+       This is correct even after shuffling. */
+    btn.addEventListener('click', function() { selectOption(idx, opt.color); });
+    list.appendChild(btn);
+    setTimeout(function() {
+      btn.style.transition = 'opacity .35s ease, transform .35s ease, border-color .3s, background .3s, color .3s';
+      btn.style.opacity = '1';
+    }, idx * 60);
+  });
+}
+
+function refreshQuizText() {
+  var L = currentLang;
+  var q = QUESTIONS[current];
+  if (!q) return;
+  document.getElementById('q-scenario').textContent = q.scenario[L];
+  document.getElementById('q-text').textContent     = q.text[L];
+  document.getElementById('progress-count').textContent = (current + 1) + ' / ' + QUESTIONS.length;
+  var prevSelected = selected;
+  buildOptionButtons(currentShuffled, L);
+  if (prevSelected !== null) {
+    document.querySelectorAll('.option-btn').forEach(function(b, idx) {
+      if (currentShuffled[idx] && currentShuffled[idx].color === prevSelected) {
+        b.classList.add('selected');
+      }
+    });
+    selected = prevSelected;
+    document.getElementById('next-btn').disabled = false;
+  }
+}
+
+function selectOption(idx, color) {
+  document.querySelectorAll('.option-btn').forEach(function(b) { b.classList.remove('selected'); });
+  document.querySelectorAll('.option-btn')[idx].classList.add('selected');
+  selected = color;
+  document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+  if (selected === null) return;
+  scores[selected]++;
+  current++;
+  if (current >= QUESTIONS.length) computeAndShowResults();
+  else renderQuestion();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESULTS
+   ─────────────────────────────────────────────────────────
+   computeAndShowResults():
+     Builds the sorted array from current scores.
+     Each entry carries only the fields renderResults() needs.
+     label, archetype, and summary are stored as the original
+     {en, ru} objects — accessed as entry.label[L] etc.
+
+   renderResults(sorted):
+     Pure render — called both fresh and on lang switch.
+     No mutations to state.
+
+   GRADIENT LOGIC:
+     The gradient uses y1="1" y2="0" (set in HTML defs),
+     meaning offset 0% = BOTTOM of figure, 100% = TOP.
+     sorted[0] (dominant, largest %) → offset 0% = feet/legs.
+     Each boundary gets a ±BLEND_HALF soft crossfade zone.
+     All stop offsets are clamped to [0,100].
+═══════════════════════════════════════════════════════════ */
+function computeAndShowResults() {
+  var total = QUESTIONS.length;
+  var sorted = ['red','yellow','green','blue'].map(function(key) {
+    var c = COLORS[key];
+    return {
+      key:       key,
+      hex:       c.hex,
+      light:     c.light,
+      border:    c.border,
+      textColor: c.textColor,
+      label:     c.label,      /* {en, ru} — access as .label[L] */
+      archetype: c.archetype,  /* {en, ru} */
+      summary:   c.summary,    /* {en, ru} */
+      count:     scores[key],
+      pct:       Math.round((scores[key] / total) * 100)
+    };
+  }).sort(function(a, b) { return b.count - a.count; });
+
+  lastSorted = sorted;
+  renderResults(sorted);
+}
+
+function renderResults(sorted) {
+  showScreen('results');
+
+  var L        = currentLang;
+  var dominant = sorted[0];
+  var second   = sorted[1];
+
+  /* ── Header ──────────────────────────────────────────
+     dominant.label[L] is always a string because
+     label is always {en:'...', ru:'...'} in COLORS.
+  ───────────────────────────────────────────────────── */
+  document.getElementById('results-title').textContent    = dominant.label[L] + ' · ' + second.label[L];
+  document.getElementById('results-subtitle').textContent = dominant.archetype[L];
+
+  document.getElementById('dominant-badge-wrap').innerHTML =
+    '<div class="dominant-badge" style="background:' + dominant.light + ';color:' + dominant.textColor + ';border:1px solid ' + dominant.border + ';">' +
+      '<div class="score-dot" style="background:' + dominant.hex + ';"></div>' +
+      UI[L].resultsDominant + ': ' + dominant.label[L] +
+    '</div>';
+
+  /* ── Gradient stops ──────────────────────────────────
+     Build bottom-to-top: dominant at 0%, others stacked up.
+     At each colour boundary add a soft ±BLEND_HALF % zone.
+  ───────────────────────────────────────────────────── */
+  var grad = document.getElementById('bodyGradient');
+  while (grad.firstChild) grad.removeChild(grad.firstChild);
+
+  var BLEND = 7;  /* half-width of crossfade zone in % */
+  var acc   = 0;  /* cumulative offset from 0 (bottom) */
+
+  sorted.forEach(function(c, i) {
+    if (i === 0) {
+      /* Dominant colour starts hard at 0% (feet) */
+      addStop(grad, c.hex, 0);
+    } else {
+      /* Crossfade from previous colour into this one around boundary `acc` */
+      addStop(grad, sorted[i-1].hex, clamp(acc - BLEND));
+      addStop(grad, c.hex,           clamp(acc + BLEND));
+    }
+    /* Anchor last colour at 100% */
+    if (i === sorted.length - 1) addStop(grad, c.hex, 100);
+    acc += c.pct;
+  });
+
+  /* ── Animate fill rect ───────────────────────────────
+     Reset to hidden (y=240 height=0), then after 150ms
+     set target (y=0 height=240). CSS .body-seg transitions both.
+  ───────────────────────────────────────────────────── */
+  var fill = document.getElementById('grad-fill');
+  fill.setAttribute('y',      '240');
+  fill.setAttribute('height', '0');
+  setTimeout(function() {
+    fill.setAttribute('y',      '0');
+    fill.setAttribute('height', '240');
+  }, 150);
+
+  /* ── Legend ──────────────────────────────────────── */
+  document.getElementById('sil-legend').innerHTML = sorted.map(function(c) {
+    return (
+      '<div class="sil-legend-item">' +
+        '<div class="sil-legend-dot" style="background:' + c.hex + ';"></div>' +
+        '<span style="color:' + c.textColor + ';">' + c.label[L] + '</span>' +
+        '<span style="color:var(--muted);">' + c.pct + '%</span>' +
+      '</div>'
+    );
+  }).join('');
+
+  /* ── Score bars ──────────────────────────────────── */
+  document.getElementById('score-bars').innerHTML = sorted.map(function(c, i) {
+    return (
+      '<div class="score-row">' +
+        '<div class="score-label"><div class="score-dot" style="background:' + c.hex + ';"></div>' + c.label[L] + '</div>' +
+        '<div class="score-track"><div class="score-fill" style="--tw:' + c.pct + '%;background:' + c.hex + ';animation-delay:' + (0.3 + i * 0.1) + 's;"></div></div>' +
+        '<div class="score-pct">' + c.pct + '%</div>' +
+      '</div>'
+    );
+  }).join('');
+
+  /* ── Blend summary ───────────────────────────────── */
+  var bk    = dominant.key + '-' + second.key;
+  var pk    = dominant.key + '-' + dominant.key;
+  var blend = BLEND_SUMMARIES[bk] || BLEND_SUMMARIES[pk] || {
+    title: { en: dominant.label.en + ' and ' + second.label.en + ' Blend',
+             ru: 'Смесь ' + dominant.label.ru + ' и ' + second.label.ru },
+    text:  { en: dominant.summary.en, ru: dominant.summary.ru }
+  };
+  document.getElementById('summary-title').textContent = blend.title[L];
+  document.getElementById('summary-text').textContent  = blend.text[L];
+}
+
+/* Helper: append a gradient stop; offset clamped to [0,100] */
+function addStop(grad, color, offsetPct) {
+  var stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  stop.setAttribute('offset',     clamp(offsetPct) + '%');
+  stop.setAttribute('stop-color', color);
+  grad.appendChild(stop);
+}
+
+function clamp(v) {
+  return Math.max(0, Math.min(100, v));
+}
+
+/* Boot */
+showScreen('landing');
+</script>
+</body>
+</html>
