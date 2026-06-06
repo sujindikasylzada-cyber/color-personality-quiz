@@ -8,557 +8,987 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-/* ── TOKENS ─────────────────────────────────── */
-:root{\r
-  --red:#C0392B;--red-light:#FDECEA;--red-mid:#E74C3C;\r
-  --yellow:#D4AC0D;--yellow-light:#FEFDE8;--yellow-mid:#F1C40F;\r
-  --green:#1E8449;--green-light:#E9F7EF;--green-mid:#27AE60;\r
-  --blue:#1A5276;--blue-light:#EBF5FB;--blue-mid:#2980B9;\r
-  --bg:#FAFAF8;--surface:#FFFFFF;--border:#E8E6E0;\r
-  --text:#1A1A1A;--muted:#6B6860;--subtle:#F2F0EB;\r
-  --f-disp:'Playfair Display',Georgia,serif;--f-body:'DM Sans',sans-serif;\r
-  --rad:12px;--rad-lg:20px;--sh:0 2px 16px rgba(0,0,0,.06);--sh-h:0 6px 28px rgba(0,0,0,.1);\r
-  --ts:all .3s cubic-bezier(.4,0,.2,1);\r
+/* ========================================================
+   DESIGN TOKENS
+   ======================================================== */
+:root{
+  --red:#C0392B;--red-light:#FDECEA;--red-mid:#E74C3C;
+  --yellow:#D4AC0D;--yellow-light:#FEFDE8;--yellow-mid:#F1C40F;
+  --green:#1E8449;--green-light:#E9F7EF;--green-mid:#27AE60;
+  --blue:#1A5276;--blue-light:#EBF5FB;--blue-mid:#2980B9;
+  --bg:#FAFAF8;--surface:#FFFFFF;--border:#E8E6E0;
+  --text:#1A1A1A;--muted:#6B6860;--subtle:#F2F0EB;
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-body:'DM Sans',sans-serif;
+  --radius:12px;--radius-lg:20px;
+  --shadow:0 2px 16px rgba(0,0,0,0.07);
+  --shadow-hover:0 6px 28px rgba(0,0,0,0.12);
+  --tr:all 0.3s cubic-bezier(0.4,0,0.2,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--f-body);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden;}
-.hidden{display:none !important;}
-.fade-in{animation:fIn .4s ease forwards;}
-@keyframes fIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;}
+.hidden{display:none!important;}
+.fade-in{animation:fadeIn .5s ease forwards;}
+.slide-up{animation:slideUp .45s cubic-bezier(0.4,0,0.2,1) forwards;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gradShift{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+@keyframes growBar{from{width:0}to{width:var(--tw)}}
 
-/* ── NAV ────────────────────────────────────── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,250,248,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:between;}
-.nav-logo{font-family:var(--f-disp);font-size:1.15rem;font-style:italic;font-weight:700;flex-grow:1;}
-.nav-right{display:flex;align-items:center;gap:1rem;}
-.nav-btn{background:none;border:none;padding:6px 14px;border-radius:99px;font-family:var(--f-body);font-size:.85rem;font-weight:500;color:var(--muted);cursor:pointer;transition:var(--ts);}
+/* ========================================================
+   SCREEN + PAGE WRAPPER
+   --------------------------------------------------------
+   FIX 1 — DESKTOP STRETCH BUG:
+   The previous code used justify-content:center on .screen,
+   which floats everything in the vertical centre of 100vh on
+   large monitors and causes awkward stretching.
+
+   New approach:
+   - .screen is a column flex that starts at the TOP of the
+     viewport (justify-content:flex-start) with padding-top
+     for the nav bar. Content stacks naturally downward.
+   - .page-wrap is the horizontal centring container, capped
+     at 1100px max-width so content never sprawls across 4K.
+   - On the results page, .results-desktop-grid becomes a
+     two-column CSS Grid on viewports >= 860px: silhouette
+     on the left, all stats/text on the right.
+   ======================================================== */
+.screen{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;   /* top-aligned — no vertical stretch */
+  padding:88px 1.25rem 3rem;    /* 56px nav + 32px gap */
+}
+/* Landing keeps centre-vertical feel on tall viewports */
+#screen-landing{
+  justify-content:center;
+  padding-top:56px;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 20%,rgba(192,57,43,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 80%,rgba(26,82,118,.07) 0%,transparent 70%),
+    var(--bg);
+}
+
+/* Universal inner container — centres and caps width */
+.page-wrap{
+  width:100%;
+  max-width:1100px;
+}
+/* Narrow variant for quiz / guide pages */
+.page-wrap--narrow{max-width:700px;}
+
+/* ========================================================
+   NAV
+   ======================================================== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(250,250,248,0.93);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:0 1.5rem;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-left{display:flex;align-items:center;gap:1rem;}
+.nav-logo{font-family:var(--font-display);font-size:1.05rem;font-style:italic;color:var(--text);letter-spacing:-0.02em;}
+.nav-right{display:flex;align-items:center;gap:0.25rem;}
+.nav-btn{background:none;border:none;padding:6px 14px;border-radius:99px;font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--muted);cursor:pointer;transition:var(--tr);letter-spacing:.01em;}
 .nav-btn:hover,.nav-btn.active{background:var(--text);color:#fff;}
-.l-toggle{background:var(--subtle);border:1px solid var(--border);font-weight:700;padding:6px 12px;border-radius:99px;font-size:.8rem;cursor:pointer;}
+.lang-toggle{display:flex;align-items:center;border:1px solid var(--border);border-radius:99px;overflow:hidden;background:var(--surface);margin-left:0.5rem;}
+.lang-btn{background:none;border:none;padding:5px 11px;font-family:var(--font-body);font-size:0.78rem;font-weight:500;color:var(--muted);cursor:pointer;transition:var(--tr);letter-spacing:.02em;white-space:nowrap;}
+.lang-btn.active{background:var(--text);color:#fff;}
 
-/* ── CONTAINER SIZE CONTROLS ───────────────── */
-.screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 1.5rem 40px;}
-.container{width:100%;max-width:800px;margin:0 auto;}
+/* ========================================================
+   LANDING
+   ======================================================== */
+.landing-inner{max-width:640px;}
+.landing-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);padding:5px 14px;border-radius:99px;margin-bottom:1.5rem;background:var(--surface);}
+.anim-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--red-mid),var(--yellow-mid),var(--green-mid),var(--blue-mid));background-size:200%;animation:gradShift 3s linear infinite;}
+.landing-title{font-family:var(--font-display);font-size:clamp(2.4rem,5vw,3.8rem);line-height:1.08;letter-spacing:-.03em;margin-bottom:1.75rem;color:var(--text);}
+.landing-title em{font-style:italic;color:var(--red);}
+.landing-cta{display:inline-flex;align-items:center;gap:10px;background:var(--text);color:#fff;border:none;padding:15px 32px;border-radius:99px;font-family:var(--font-body);font-size:.95rem;font-weight:500;cursor:pointer;transition:var(--tr);letter-spacing:.01em;}
+.landing-cta:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);}
+.landing-cta svg{transition:transform .3s ease;}
+.landing-cta:hover svg{transform:translateX(4px);}
+.color-preview{display:flex;gap:12px;margin-top:3rem;flex-wrap:wrap;}
+.color-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;font-size:.8rem;font-weight:500;border:1px solid transparent;}
+.color-chip .dot{width:10px;height:10px;border-radius:50%;}
+.chip-red{background:var(--red-light);color:var(--red);border-color:rgba(192,57,43,.15);}
+.chip-yellow{background:var(--yellow-light);color:#9A7D0A;border-color:rgba(212,172,13,.2);}
+.chip-green{background:var(--green-light);color:var(--green);border-color:rgba(30,132,73,.15);}
+.chip-blue{background:var(--blue-light);color:var(--blue);border-color:rgba(26,82,118,.15);}
+.landing-attribution{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--muted);}
 
-/* ── LANDING ────────────────────────────────── */
-#view-landing{background:radial-gradient(ellipse 50% 50% at 80% 20%,rgba(192,57,43,.05),transparent),var(--bg);}
-.l-title{font-family:var(--f-disp);font-size:clamp(2.5rem,6vw,4rem);line-height:1.1;margin-bottom:1.5rem;}
-.l-title em{font-style:italic;color:var(--red);}
-.l-desc{font-size:1.1rem;color:var(--muted);max-width:520px;margin-bottom:2.5rem;font-weight:300;}
-.btn-p{display:inline-flex;align-items:center;gap:10px;background:var(--text);color:#fff;border:none;padding:16px 36px;border-radius:99px;font-size:1rem;font-weight:500;cursor:pointer;transition:var(--ts);text-decoration:none;}
-.btn-p:hover{transform:translateY(-2px);box-shadow:var(--sh-h);}
-.btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+/* ========================================================
+   GUIDE
+   ======================================================== */
+.guide-header{margin-bottom:2rem;}
+.guide-title{font-family:var(--font-display);font-size:2rem;letter-spacing:-.025em;margin-bottom:.5rem;}
+.guide-subtitle{color:var(--muted);font-size:.95rem;font-weight:300;}
+.guide-grid{display:flex;flex-direction:column;gap:1.5rem;}
+.guide-card{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;transition:var(--tr);}
+.guide-card:hover{box-shadow:var(--shadow-hover);}
+.guide-card-banner{height:6px;width:100%;}
+.guide-card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:14px;}
+.guide-color-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:#fff;flex-shrink:0;}
+.guide-card-head-text{flex:1;}
+.guide-card-title{font-family:var(--font-display);font-size:1.3rem;font-weight:700;line-height:1.2;}
+.guide-card-archetype{font-size:.78rem;color:var(--muted);margin-top:3px;letter-spacing:.02em;}
+.guide-card-description{padding:0 1.5rem 1.25rem;font-size:.9rem;color:var(--muted);line-height:1.75;font-weight:300;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
+.guide-card-body{padding:0 1.5rem 1.5rem;}
+.trait-list{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem;}
+.trait-pill{font-size:.75rem;font-weight:500;padding:4px 11px;border-radius:99px;border:1px solid transparent;}
+.celeb-section-label{font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem;}
 
-/* ── PREVIEW CHIPS ──────────────────────────── */
-.c-prev{display:flex;gap:12px;margin-top:3.5rem;flex-wrap:wrap;}
-.chip{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:99px;font-size:.85rem;font-weight:500;}
-.chip .dot{width:10px;height:10px;border-radius:50%;}
-.ch-r{background:var(--red-light);color:var(--red);}
-.ch-y{background:var(--yellow-light);color:#9A7D0A;}
-.ch-g{background:var(--green-light);color:var(--green);}
-.ch-b{background:var(--blue-light);color:var(--blue);}
+/* Celebrity grid — 1 col mobile, 2 cols desktop */
+.celebrity-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+.celeb-card{background:var(--subtle);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:8px;}
+.celeb-card-top{display:flex;align-items:center;gap:10px;}
+/* Portrait photo ring — img loads from JS data photo URL. */
+/* If the request fails, onerror hides img and shows .celeb-initials */
+.celeb-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2.5px solid var(--surface);display:block;flex-shrink:0;background:var(--border);}
+.celeb-initials{width:52px;height:52px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;border:2.5px solid var(--surface);flex-shrink:0;}
+.celeb-name-block{flex:1;min-width:0;}
+.celeb-name{font-size:.88rem;font-weight:600;line-height:1.3;color:var(--text);}
+.celeb-badge{display:inline-block;margin-top:4px;font-size:.67rem;font-weight:500;padding:2px 8px;border-radius:99px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.celeb-note{font-size:.78rem;color:var(--muted);line-height:1.5;font-style:italic;}
 
-/* ── GUIDE ──────────────────────────────────── */
-.g-grid{display:flex;flex-direction:column;gap:2rem;margin-top:2rem;}
-.g-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);overflow:hidden;box-shadow:var(--sh);}
-.g-banner{height:12px;}
-.g-hdr{padding:1.5rem 1.5rem 1rem;display:flex;align-items:center;gap:1rem;}
-.g-circle{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--f-disp);font-size:1.3rem;font-weight:700;}
-.g-t1{font-family:var(--f-disp);font-size:1.4rem;font-weight:700;}
-.g-t2{font-size:.85rem;color:var(--muted);}
-.g-body{padding:0 1.5rem 1.5rem;}
-.g-desc{font-size:.95rem;color:var(--muted);margin-bottom:1.5rem;}
-.cel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;}
-.cel-card{display:flex;align-items:center;gap:12px;background:var(--bg);padding:12px;border-radius:var(--rad);border:1px solid var(--border);}
-.cel-img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--surface);background:var(--subtle);}
-.cel-name{font-size:.9rem;font-weight:700;}
-.cel-badge{display:inline-block;font-size:.75rem;color:var(--muted);margin-top:2px;}
+/* ========================================================
+   QUIZ
+   ======================================================== */
+.quiz-progress-wrap{margin-bottom:2rem;}
+.quiz-progress-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.quiz-progress-label{font-size:.78rem;color:var(--muted);font-weight:500;letter-spacing:.05em;text-transform:uppercase;}
+.quiz-progress-count{font-family:var(--font-display);font-size:.9rem;color:var(--muted);}
+.quiz-progress-track{height:3px;background:var(--border);border-radius:99px;overflow:hidden;}
+.quiz-progress-fill{height:100%;background:var(--text);border-radius:99px;transition:width .5s cubic-bezier(0.4,0,0.2,1);}
+.question-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.question-scenario{font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
+.question-text{font-family:var(--font-display);font-size:1.35rem;line-height:1.4;letter-spacing:-.015em;color:var(--text);}
+.options-list{display:flex;flex-direction:column;gap:10px;}
+.option-btn{width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;font-family:var(--font-body);font-size:.92rem;color:var(--text);cursor:pointer;transition:var(--tr);display:flex;align-items:flex-start;gap:12px;line-height:1.55;}
+.option-btn:hover{border-color:var(--text);background:var(--subtle);transform:translateX(4px);}
+.option-btn.selected{border-color:var(--text);background:var(--text);color:#fff;}
+.option-letter{font-weight:700;font-size:.78rem;width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;opacity:.65;letter-spacing:0;}
+.option-btn.selected .option-letter{opacity:1;}
+.quiz-next-btn{width:100%;padding:15px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:.95rem;font-weight:500;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:.5rem;}
+.quiz-next-btn:hover{opacity:.85;}
+.quiz-next-btn:disabled{opacity:.3;cursor:default;}
 
-/* ── QUIZ ───────────────────────────────────── */
-.q-track{height:4px;background:var(--border);border-radius:99px;margin:1.5rem 0 2.5rem;overflow:hidden;}
-.q-fill{height:100%;background:var(--text);width:0%;transition:width .4s ease;}
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);padding:2.5rem;margin-bottom:1.5rem;box-shadow:var(--sh);}
-.q-scen{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.5rem;}
-.q-txt{font-family:var(--f-disp);font-size:1.6rem;line-height:1.35;}
-.opt-list{display:flex;flex-direction:column;gap:12px;margin-bottom:2rem;}
-.opt-btn{width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--border);padding:1.25rem 1.5rem;border-radius:var(--rad);cursor:pointer;font-family:var(--f-body);font-size:1rem;transition:var(--ts);display:flex;gap:1rem;align-items:center;}
-.opt-btn:hover{border-color:var(--text);background:var(--bg);transform:translateX(4px);}
-.opt-btn.selected{background:var(--text);color:#fff;border-color:var(--text);}
-.opt-let{font-weight:700;opacity:.5;}
+/* ========================================================
+   RESULTS — header / badge
+   ======================================================== */
+.results-header{margin-bottom:1.5rem;}
+.results-eyebrow{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.6rem;}
+.results-title{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.025em;line-height:1.1;margin-bottom:.5rem;}
+.results-subtitle{color:var(--muted);font-size:.9rem;font-weight:300;}
+.dominant-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;font-size:.8rem;font-weight:600;margin-bottom:1.25rem;}
+.score-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 
-/* ── RESULTS LAYOUT FIXES ───────────────────── */
-.res-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);padding:2rem;box-shadow:var(--sh);margin-bottom:1.5rem;}
-.sil-box{background:var(--bg);border:1px dashed var(--border);border-radius:var(--rad);padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1.5rem;margin-bottom:2rem;}
+/* ========================================================
+   RESULTS — desktop two-column grid
+   --------------------------------------------------------
+   FIX 1 (continued) — on >= 860px the results card splits
+   into a two-column layout:
+     Left  (silhouette-col): the SVG figure + colour legend + score bars
+     Right (stats-col)     : personality description + action buttons
 
-/* Strict silhouette dimension limits to prevent desktop blowing up */
-.sil-svg-wrap{width:100%;max-width:180px;max-height:280px;height:auto;display:flex;align-items:center;justify-content:center;}
-.sil-svg-wrap svg{width:100%;height:100%;max-height:280px;object-fit:contain;}
+   On mobile they stack vertically (column direction).
+   ======================================================== */
+.results-desktop-grid{
+  display:flex;
+  flex-direction:column;
+  gap:1.25rem;
+}
+.blend-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1.75rem;
+  box-shadow:var(--shadow);
+}
+.blend-label{font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;}
 
-.sil-legend{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;width:100%;}
-.sil-legend-item{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:500;padding:4px 12px;background:var(--surface);border:1px solid var(--border);border-radius:99px;}
-.sil-legend-dot{width:8px;height:8px;border-radius:50%;}
-.score-bars{display:flex;flex-direction:column;gap:14px;margin-top:1.5rem;}
-.score-row{display:grid;grid-template-columns:110px 1fr 45px;align-items:center;gap:1rem;}
-.score-label{display:flex;align-items:center;gap:8px;font-weight:500;font-size:.9rem;}
-.score-dot{width:10px;height:10px;border-radius:50%;}
-.score-track{height:8px;background:var(--subtle);border-radius:99px;overflow:hidden;}
-.score-fill{height:100%;border-radius:99px;width:0%;transition:width 1s cubic-bezier(.4,0,.2,1) forwards;}
-.score-pct{text-align:right;font-weight:700;color:var(--muted);font-size:.9rem;}
-.sum-block{background:var(--bg);border-left:4px solid var(--text);padding:1.5rem;border-radius:0 var(--rad) var(--rad) 0;margin-top:2rem;}
-.sum-title{font-family:var(--f-disp);font-size:1.25rem;font-weight:700;margin-bottom:.5rem;}
-.sum-text{font-size:.95rem;color:var(--muted);line-height:1.7;}
-.act-row{display:flex;gap:1rem;flex-wrap:wrap;}
-.btn-s{flex:1;min-width:160px;padding:14px 28px;background:none;border:1.5px solid var(--border);color:var(--text);border-radius:99px;font-size:.95rem;font-weight:500;cursor:pointer;text-align:center;transition:var(--ts);}
-.btn-s:hover{background:var(--subtle);border-color:var(--text);}
+/* Inner flex row — becomes two columns on desktop */
+.blend-body{
+  display:flex;
+  flex-direction:column;
+  gap:1.5rem;
+}
+
+/* ========================================================
+   SVG SILHOUETTE — STRICT SIZE BOUNDARIES
+   --------------------------------------------------------
+   FIX 2 — SVG distortion on large screens:
+
+   The previous version lacked a hard max-height on the SVG
+   itself, allowing it to grow beyond the intended 230px box
+   when the flex parent expanded on a large monitor.
+
+   This version uses THREE interlocking constraints:
+   1. .silhouette-col: the column container. overflow:hidden
+      clips the drop-shadow so it cannot leak into the layout.
+   2. .sil-figure-box: fixed height container with explicit
+      max-height:280px — the SVG is measured against this.
+   3. #human-figure-svg: height:100%; width:auto; max-height:280px;
+      max-width:120px — the SVG fills its box but never exceeds
+      either dimension regardless of viewport size.
+
+   On desktop (.blend-body flex-row) the silhouette-col is a
+   fixed-width sidebar so the SVG width is naturally bounded.
+   ======================================================== */
+.silhouette-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  /* Clip the drop-shadow so it cannot push layout height */
+  overflow:hidden;
+  padding:4px 4px 8px;
+}
+
+.sil-figure-box{
+  /* Hard ceiling — the SVG will never exceed this */
+  height:240px;
+  max-height:280px;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#human-figure-svg{
+  height:100%;           /* fills the 240px box */
+  width:auto;            /* maintains viewBox aspect ratio */
+  max-height:280px;      /* absolute cap — belt and braces */
+  max-width:120px;       /* never wider than this */
+  display:block;
+  overflow:visible;      /* allows drop-shadow to render */
+  filter:drop-shadow(0 3px 12px rgba(0,0,0,0.14));
+}
+
+/* CSS attribute transitions for the fill animation */
+.body-seg{
+  transition:
+    height 1.4s cubic-bezier(0.22,1,0.36,1),
+    y      1.4s cubic-bezier(0.22,1,0.36,1);
+}
+
+.sil-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 16px;margin-top:1.25rem;}
+.sil-legend-item{display:flex;align-items:center;gap:6px;font-size:.8rem;font-weight:500;}
+.sil-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.score-bars{display:flex;flex-direction:column;gap:10px;margin-top:1.25rem;width:100%;}
+.score-row{display:grid;grid-template-columns:76px 1fr 40px;align-items:center;gap:10px;}
+.score-label{font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:6px;}
+.score-track{height:6px;background:var(--subtle);border-radius:99px;overflow:hidden;}
+.score-fill{height:100%;border-radius:99px;width:0;animation:growBar 1s cubic-bezier(0.4,0,0.2,1) forwards;}
+.score-pct{font-size:.8rem;font-weight:600;text-align:right;color:var(--muted);}
+
+/* Stats column (right side on desktop) */
+.stats-col{flex:1;min-width:0;}
+.summary-card{background:var(--subtle);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem;}
+.summary-card-title{font-family:var(--font-display);font-size:1.05rem;margin-bottom:.6rem;font-style:italic;}
+.summary-card-text{font-size:.9rem;color:var(--muted);line-height:1.75;font-weight:300;}
+.results-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem;}
+.btn-outline{flex:1;min-width:140px;padding:12px 20px;background:none;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:.88rem;font-weight:500;color:var(--text);cursor:pointer;transition:var(--tr);text-align:center;}
+.btn-outline:hover{background:var(--subtle);border-color:var(--text);}
+.btn-solid{flex:1;min-width:140px;padding:12px 20px;background:var(--text);border:1.5px solid var(--text);border-radius:var(--radius);font-family:var(--font-body);font-size:.88rem;font-weight:500;color:#fff;cursor:pointer;transition:var(--tr);text-align:center;}
+.btn-solid:hover{opacity:.85;}
+
+footer{text-align:center;padding:2rem 1.25rem 3rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);}
+
+/* ========================================================
+   DESKTOP BREAKPOINT (>= 860px)
+   ======================================================== */
+@media(min-width:860px){
+
+  /* Results card inner body: silhouette left, stats right */
+  .blend-body{
+    flex-direction:row;
+    align-items:flex-start;
+    gap:2rem;
+  }
+
+  /* Silhouette column: fixed width sidebar */
+  .silhouette-col{
+    flex:0 0 200px;
+    width:200px;
+  }
+
+  /* Guide: two columns of cards */
+  .guide-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1.25rem;
+  }
+
+  /* Celebrity grid inside guide cards: 2 columns */
+  .celebrity-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  /* Results score-row label slightly wider on desktop */
+  .score-row{grid-template-columns:88px 1fr 44px;}
+}
+
+/* ========================================================
+   MOBILE BREAKPOINT (<= 599px)
+   ======================================================== */
+@media(max-width:599px){
+  .screen{padding:76px 1rem 2rem;}
+  #screen-landing{padding-top:56px;}
+  .landing-title{font-size:2.1rem;}
+  .question-text{font-size:1.15rem;}
+  .results-actions{flex-direction:column;}
+  nav{padding:0 1rem;}
+  .nav-logo{font-size:.9rem;}
+  .lang-btn{padding:5px 8px;font-size:.72rem;}
+  /* Slightly shorter SVG box on phone */
+  .sil-figure-box{height:200px;max-height:200px;}
+  #human-figure-svg{max-height:200px;}
+}
 </style>
 </head>
 <body>
 
+<!-- ============================================================
+     NAV
+     ============================================================ -->
 <nav>
-  <div class="nav-logo" id="nav-logo">Surrounded by Idiots</div>
+  <div class="nav-left">
+    <div class="nav-logo" data-i18n="navLogo">Surrounded by Idiots</div>
+  </div>
   <div class="nav-right">
-    <button class="nav-btn active" id="nav-home" onclick="setView('landing')">Home</button>
-    <button class="nav-btn" id="nav-guide" onclick="setView('guide')">Guide</button>
-    <button class="l-toggle" id="lang-toggle" onclick="toggleLanguage()">RU</button>
+    <button class="nav-btn active" id="nav-home"  onclick="showScreen('landing')" data-i18n="navHome">Home</button>
+    <button class="nav-btn"        id="nav-guide" onclick="showScreen('guide')"   data-i18n="navGuide">Color Guide</button>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button class="lang-btn active" id="lang-en" onclick="setLang('en')">&#127468;&#127463; EN</button>
+      <button class="lang-btn"        id="lang-ru" onclick="setLang('ru')">&#127479;&#127482; RU</button>
+    </div>
   </div>
 </nav>
 
-<section class="screen" id="view-landing">
-  <div class="container">
-    <h1 class="l-title" id="lbl-title">Discover your true <em>personality</em> color matrix.</h1>
-    <p class="l-desc" id="lbl-desc">Take a brief, adaptive situational analysis to reveal your dominant behavioural trait mix and processing vectors.</p>
-    <button class="btn-p" onclick="startQuiz()" id="lbl-start-btn">Begin Assessment</button>
-    <div class="c-prev">
-      <div class="chip ch-r"><div class="dot" style="background:var(--red)"></div><span id="lbl-c-red">Red</span></div>
-      <div class="chip ch-y"><div class="dot" style="background:var(--yellow-mid)"></div><span id="lbl-c-yellow">Yellow</span></div>
-      <div class="chip ch-g"><div class="dot" style="background:var(--green)"></div><span id="lbl-c-green">Green</span></div>
-      <div class="chip ch-b"><div class="dot" style="background:var(--blue)"></div><span id="lbl-c-blue">Blue</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="screen hidden" id="view-guide">
-  <div class="container fade-in">
-    <h2 class="g-t1" id="lbl-guide-head" style="font-size:2rem; margin-bottom:1.5rem;">Behavioral Archetype Compass</h2>
-    <div class="g-grid" id="guide-target"></div>
-  </div>
-</section>
-
-<section class="screen hidden" id="view-quiz">
-  <div class="container">
-    <div class="q-track"><div class="q-fill" id="progress-bar"></div></div>
-    <div class="q-card fade-in">
-      <div class="q-scen" id="dom-scenario">Scenario</div>
-      <h2 class="q-txt" id="dom-question">Question body loading...</h2>
-    </div>
-    <div class="opt-list" id="dom-options"></div>
-    <button class="btn-p" id="dom-next" disabled onclick="handleNext()" style="width:100%; justify-content:center;">Continue</button>
-  </div>
-</section>
-
-<section class="screen hidden" id="view-results">
-  <div class="container fade-in">
-    <h2 class="g-t1" id="lbl-res-head" style="font-size:2.2rem; margin-bottom:1.5rem;">Your Vector Architecture</h2>
-    <div class="res-card">
-      <h3 class="sum-title" id="dom-res-blend-title" style="font-size:1.6rem; margin-bottom:1.5rem;">Profile Loading...</h3>
-      
-      <div class="sil-box">
-        <div class="sil-svg-wrap" id="silhouette-container"></div>
-        <div class="sil-legend" id="silhouette-legend"></div>
+<!-- ============================================================
+     LANDING
+     ============================================================ -->
+<section class="screen" id="screen-landing">
+  <div class="page-wrap">
+    <div class="landing-inner">
+      <div class="landing-eyebrow">
+        <span class="anim-dot"></span>
+        <span data-i18n="landingEyebrow">Personality test</span>
       </div>
-
-      <div class="score-bars" id="score-bars"></div>
-      
-      <div class="sum-block">
-        <div class="sum-title" id="summary-title">Classification Matrix</div>
-        <p class="sum-text" id="summary-text">...</p>
+      <h1 class="landing-title">
+        <span data-i18n="landingLine1">Discover your</span><br/>
+        <em data-i18n="landingLine2">personality</em><br/>
+        <span data-i18n="landingLine3">color.</span>
+      </h1>
+      <button class="landing-cta" onclick="startQuiz()">
+        <span data-i18n="landingCta">Begin the test</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="color-preview">
+        <div class="color-chip chip-red"><div class="dot" style="background:var(--red)"></div><span data-i18n="chipRed">Red · Dominant</span></div>
+        <div class="color-chip chip-yellow"><div class="dot" style="background:var(--yellow-mid)"></div><span data-i18n="chipYellow">Yellow · Inspiring</span></div>
+        <div class="color-chip chip-green"><div class="dot" style="background:var(--green)"></div><span data-i18n="chipGreen">Green · Stable</span></div>
+        <div class="color-chip chip-blue"><div class="dot" style="background:var(--blue)"></div><span data-i18n="chipBlue">Blue · Analytical</span></div>
       </div>
-    </div>
-    <div class="act-row">
-      <button class="btn-s" onclick="startQuiz()" id="lbl-btn-retry">Retake Assessment</button>
-      <button class="btn-p" onclick="setView('guide')" id="lbl-btn-guide" style="flex:1; text-align:center; justify-content:center;">Explore Guide</button>
+      <p class="landing-attribution" data-i18n="landingAttrib">Inspired by "Surrounded by Idiots" by Thomas Erikson. Results are for self-reflection only.</p>
     </div>
   </div>
 </section>
+
+<!-- ============================================================
+     COLOR GUIDE
+     ============================================================ -->
+<section class="screen hidden" id="screen-guide">
+  <div class="page-wrap">
+    <div class="guide-header slide-up">
+      <p style="font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.5rem;" data-i18n="guideEyebrow">Color Guide</p>
+      <h2 class="guide-title" data-i18n="guideTitle">The four personalities</h2>
+      <p class="guide-subtitle" data-i18n="guideSubtitle">Core traits, real-world archetypes, and what each color fundamentally represents.</p>
+    </div>
+    <div class="guide-grid" id="guide-grid"></div>
+    <div style="margin-top:2rem;text-align:center;">
+      <button class="btn-outline" style="max-width:240px;" onclick="startQuiz()" data-i18n="guideCta">Take the test</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     QUIZ
+     ============================================================ -->
+<section class="screen hidden" id="screen-quiz">
+  <div class="page-wrap page-wrap--narrow">
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-meta">
+        <span class="quiz-progress-label" data-i18n="quizLabel">Question</span>
+        <span class="quiz-progress-count" id="progress-count">1 / 12</span>
+      </div>
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="progress-fill" style="width:8.3%"></div>
+      </div>
+    </div>
+    <div class="question-card fade-in" id="question-card">
+      <p class="question-scenario" id="q-scenario"></p>
+      <h2 class="question-text"    id="q-text"></h2>
+    </div>
+    <div class="options-list" id="options-list"></div>
+    <button class="quiz-next-btn" id="next-btn" disabled onclick="nextQuestion()">
+      <span data-i18n="quizContinue">Continue</span>
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     RESULTS
+     ============================================================ -->
+<section class="screen hidden" id="screen-results">
+  <div class="page-wrap">
+
+    <div class="results-header">
+      <p class="results-eyebrow" data-i18n="resultsEyebrow">Your personality profile</p>
+      <h2 class="results-title"   id="results-title">...</h2>
+      <p class="results-subtitle" id="results-subtitle"></p>
+    </div>
+    <div id="dominant-badge-wrap"></div>
+
+    <!--
+      RESULTS LAYOUT
+      ==============
+      .results-desktop-grid   — outer column (adds margin-bottom)
+      .blend-card             — the white card surface
+      .blend-body             — flex row on desktop, column on mobile
+        .silhouette-col       — left: SVG figure + legend + bars
+        .stats-col            — right: personality text + actions
+    -->
+    <div class="results-desktop-grid">
+      <div class="blend-card">
+        <p class="blend-label" data-i18n="blendLabel">Personality silhouette</p>
+
+        <div class="blend-body">
+
+          <!-- LEFT COLUMN: silhouette figure + colour data -->
+          <div class="silhouette-col">
+            <!--
+              HUMAN FIGURE SVG
+              ================
+              viewBox="0 0 100 240"  (100 wide x 240 tall)
+
+              Clip-path uses ONLY M/C/L/Z bezier commands — no arc (A)
+              commands — for full cross-browser clipPath compatibility.
+
+              Sub-path 1  HEAD  — 4 cubic beziers, circle cx=50 cy=20 r=16
+              Sub-path 2  BODY  — neck, shoulders, arms, torso, legs, feet
+              fill-rule="evenodd" makes the two sub-paths combine.
+
+              linearGradient y1="1" y2="0" => objectBoundingBox:
+                stop offset 0%   = BOTTOM (feet) = dominant colour
+                stop offset 100% = TOP    (head)  = smallest colour
+              JS rebuilds stops on every results render.
+
+              grad-fill rect animates y=240 h=0 -> y=0 h=240
+              via CSS .body-seg transitions.
+
+              SIZING: the SVG is constrained by THREE rules:
+                .sil-figure-box { height:240px; max-height:280px }
+                #human-figure-svg { height:100%; max-height:280px; max-width:120px }
+              This means it NEVER bloats on large monitors.
+            -->
+            <div class="sil-figure-box">
+              <svg id="human-figure-svg"
+                   viewBox="0 0 100 240"
+                   xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <clipPath id="bodyClip">
+                    <path fill-rule="evenodd" d="
+                      M 50 4
+                      C 59 4 66 11 66 20
+                      C 66 29 59 36 50 36
+                      C 41 36 34 29 34 20
+                      C 34 11 41 4 50 4 Z
+
+                      M 50 40
+                      C 47 40 45 42 44 44
+                      C 37 45 24 50 19 58
+                      C 14 66 14 75 15 83
+                      L 18 95
+                      C 19 99 22 101 26 100
+                      L 29 99
+                      L 26 114
+                      L 21 173
+                      C 20 179 21 185 24 188
+                      C 27 191 31 192 35 192
+                      L 42 192
+                      C 46 192 49 189 50 185
+                      C 50 182 50 178 49 174
+                      L 49 132
+                      L 51 132
+                      L 51 174
+                      C 50 178 50 182 50 185
+                      C 51 189 54 192 58 192
+                      L 65 192
+                      C 69 192 73 191 76 188
+                      C 79 185 80 179 79 173
+                      L 74 114
+                      L 71 99
+                      L 74 100
+                      C 78 101 81 99 82 95
+                      L 85 83
+                      C 86 75 86 66 81 58
+                      C 76 50 63 45 56 44
+                      C 55 42 53 40 50 40 Z
+                    "/>
+                  </clipPath>
+
+                  <linearGradient id="bodyGradient"
+                                  x1="0" y1="1" x2="0" y2="0"
+                                  gradientUnits="objectBoundingBox">
+                  </linearGradient>
+                </defs>
+
+                <!-- Grey placeholder before gradient fills in -->
+                <rect x="0" y="0" width="100" height="240"
+                      fill="#CBC6BE" clip-path="url(#bodyClip)"/>
+
+                <!-- Animated gradient fill rect -->
+                <rect id="grad-fill"
+                      x="0" y="240" width="100" height="0"
+                      fill="url(#bodyGradient)"
+                      clip-path="url(#bodyClip)"
+                      class="body-seg"/>
+
+                <!-- Subtle head rim for depth -->
+                <circle cx="50" cy="20" r="15"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.2)"
+                        stroke-width="1.2"/>
+              </svg>
+            </div>
+
+            <!-- Colour legend + score bars stay in the left column -->
+            <div class="sil-legend" id="sil-legend"></div>
+            <div class="score-bars"  id="score-bars"></div>
+          </div>
+          <!-- /silhouette-col -->
+
+          <!-- RIGHT COLUMN: personality text + actions -->
+          <div class="stats-col">
+            <div class="summary-card">
+              <p class="summary-card-title" id="summary-title"></p>
+              <p class="summary-card-text"  id="summary-text"></p>
+            </div>
+            <div class="results-actions">
+              <button class="btn-outline" onclick="startQuiz()"         data-i18n="resultsRetake">Retake test</button>
+              <button class="btn-solid"   onclick="showScreen('guide')" data-i18n="resultsGuide">Explore color guide</button>
+            </div>
+          </div>
+          <!-- /stats-col -->
+
+        </div>
+        <!-- /blend-body -->
+      </div>
+      <!-- /blend-card -->
+    </div>
+    <!-- /results-desktop-grid -->
+
+  </div>
+  <!-- /page-wrap -->
+</section>
+
+<footer>
+  <span data-i18n="footer">Inspired by Surrounded by Idiots &middot; Thomas Erikson &middot; For educational purposes only</span>
+</footer>
 
 <script>
-/* ── LOCALIZATION ARRAYS ────────────────────── */
-var L = 'en';
-var STRINGS = {
+/* UI TRANSLATIONS
+   setLang() swaps every [data-i18n] element.
+   JS-rendered text reads UI[currentLang].key directly. */
+var UI = {
   en: {
-    title: 'Discover your true <em>personality</em> color matrix.',
-    desc: 'Take a brief, adaptive situational analysis to reveal your dominant behavioural trait mix and processing vectors.',
-    startBtn: 'Begin Assessment',
-    retry: 'Retake Assessment',
-    explore: 'Explore Guide',
-    guideHead: 'Behavioral Archetype Compass',
-    resHead: 'Your Vector Architecture',
-    continueBtn: 'Continue',
-    red: 'Red', yellow: 'Yellow', green: 'Green', blue: 'Blue'
+    navLogo:'Surrounded by Idiots', navHome:'Home', navGuide:'Color Guide',
+    landingEyebrow:'Personality test',
+    landingLine1:'Discover your', landingLine2:'personality', landingLine3:'color.',
+    landingCta:'Begin the test',
+    chipRed:'Red · Dominant', chipYellow:'Yellow · Inspiring',
+    chipGreen:'Green · Stable', chipBlue:'Blue · Analytical',
+    landingAttrib:'Inspired by "Surrounded by Idiots" by Thomas Erikson. Results are for self-reflection only.',
+    guideEyebrow:'Color Guide', guideTitle:'The four personalities',
+    guideSubtitle:'Core traits, real-world archetypes, and what each color fundamentally represents.',
+    guideCta:'Take the test',
+    quizLabel:'Question', quizContinue:'Continue',
+    resultsEyebrow:'Your personality profile',
+    blendLabel:'Personality silhouette', resultsDominant:'Dominant',
+    resultsRetake:'Retake test', resultsGuide:'Explore color guide',
+    footer:'Inspired by Surrounded by Idiots · Thomas Erikson · For educational purposes only',
+    celebArchetypes:'Real-world archetypes'
   },
   ru: {
-    title: 'Узнайте свой настоящий <em>цвет</em> личности.',
-    desc: 'Пройдите короткий ситуационный тест, чтобы определить комбинацию поведенческих факторов и векторов мышления.',
-    startBtn: 'Начать тест',
-    retry: 'Пройти заново',
-    explore: 'Открыть руководство',
-    guideHead: 'Компас поведенческих архетипов',
-    resHead: 'Архитектура ваших векторов',
-    continueBtn: 'Продолжить',
-    red: 'Красный', yellow: 'Желтый', green: 'Зеленый', blue: 'Синий'
+    navLogo:'Окружён идиотами', navHome:'Главная', navGuide:'Гид по цветам',
+    landingEyebrow:'Тест личности',
+    landingLine1:'Узнай свой', landingLine2:'цвет', landingLine3:'личности.',
+    landingCta:'Начать тест',
+    chipRed:'Красный · Доминирующий', chipYellow:'Жёлтый · Вдохновляющий',
+    chipGreen:'Зелёный · Стабильный', chipBlue:'Синий · Аналитический',
+    landingAttrib:'По мотивам «Окружён идиотами» Томаса Эриксона. Результаты носят ознакомительный характер.',
+    guideEyebrow:'Гид по цветам', guideTitle:'Четыре типа личности',
+    guideSubtitle:'Ключевые черты, реальные прототипы и суть каждого цветового типа.',
+    guideCta:'Пройти тест',
+    quizLabel:'Вопрос', quizContinue:'Далее',
+    resultsEyebrow:'Ваш профиль личности',
+    blendLabel:'Силуэт личности', resultsDominant:'Доминирующий',
+    resultsRetake:'Пройти снова', resultsGuide:'Гид по цветам',
+    footer:'По мотивам «Окружён идиотами» · Томас Эриксон · Только для образовательных целей',
+    celebArchetypes:'Реальные прототипы'
   }
 };
 
-var CELEBRITIES = {
-  red: [
-    { name: 'Steve Jobs', badge: { en: 'Founder of Apple', ru: 'Основатель Apple' }, img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80' /* ADD YOUR PHOTO HERE */ },
-    { name: 'Elon Musk', badge: { en: 'Founder of Tesla', ru: 'Основатель Tesla' }, img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' /* ADD YOUR PHOTO HERE */ }
-  ],
-  yellow: [
-    { name: 'Oprah Winfrey', badge: { en: 'Media Icon', ru: 'Медиа-магнат' }, img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80' /* ADD YOUR PHOTO HERE */ }
-  ],
-  green: [
-    { name: 'Keanu Reeves', badge: { en: 'Philanthropist & Actor', ru: 'Актер и филантроп' }, img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80' /* ADD YOUR PHOTO HERE */ }
-  ],
-  blue: [
-    { name: 'Bill Gates', badge: { en: 'Co-founder of Microsoft', ru: 'Основатель Microsoft' }, img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80' /* ADD YOUR PHOTO HERE */ }
-  ]
-};
+var currentLang = 'en';
 
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (UI[lang][key] !== undefined) el.textContent = UI[lang][key];
+  });
+  document.documentElement.lang = lang;
+  if (!document.getElementById('screen-guide').classList.contains('hidden'))   renderGuide();
+  if (!document.getElementById('screen-quiz').classList.contains('hidden'))    refreshQuizText();
+  if (!document.getElementById('screen-results').classList.contains('hidden') && lastSorted) renderResults(lastSorted);
+}
+
+/* COLOR DATA
+   - label / archetype / summary / traits: always {en, ru}
+   - Access via c.label[L], c.archetype[L], etc.
+   - celebrity.photo: working public URL
+     Each photo line has a /* ADD YOUR PHOTO HERE */ comment so
+     you can find and swap every portrait without touching the loop. */
 var COLORS = {
   red: {
-    key: 'red', hex: '#C0392B', light: '#FDECEA', mid: '#E74C3C', textColor: '#C0392B',
-    label: { en: 'Red Vector', ru: 'Красный вектор' },
-    sub: { en: 'Dominant • Competitive • Outcome-Driven', ru: 'Доминантный • Конкурентный • Нацеленный на результат' },
+    key:'red', hex:'#C0392B', light:'#FDECEA',
+    border:'rgba(192,57,43,0.2)', textColor:'#C0392B',
+    label:     {en:'Red',    ru:'Красный'},
+    archetype: {en:'Dominant · Direct · Decisive', ru:'Доминирующий · Прямой · Решительный'},
     summary: {
-      en: 'Red profiles are governed by speed, agency, and operational control. You leverage high-conviction decision frameworks and process institutional ambiguity into concrete executable vectors rapidly.',
-      ru: 'Красные профили ориентированы на скорость, автономность и операционный контроль. Вы принимаете уверенные решения и мгновенно превращаете неопределенность в четкие векторы действий.'
-    }
+      en:'Red personalities are driven by results, power, and speed. They are natural leaders who thrive in high-pressure environments and make bold decisions without hesitation. Their superpower is relentless forward momentum. Their blind spot is impatience with people who need time to think.',
+      ru:'Красные личности движимы результатами, властью и скоростью. Прирождённые лидеры, процветающие под давлением. Их суперсила — неудержимое движение вперёд. Слепое пятно — нетерпение к тем, кому нужно время обдумать решение.'
+    },
+    traits: {
+      en:['Results-driven','Competitive','Direct','Decisive','Ambitious','Impatient','Bold'],
+      ru:['Нацелен на результат','Конкурентный','Прямолинейный','Решительный','Амбициозный','Нетерпеливый','Смелый']
+    },
+    celebrities: [
+      {
+        name:'Steve Jobs',
+        achievement:{en:'Co-founder of Apple', ru:'Сооснователь Apple'},
+        note:{en:'Relentless perfectionist and visionary driver', ru:'Неутомимый перфекционист и провидец'},
+        photo:'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80', /* ADD YOUR PHOTO HERE */
+        initials:'SJ'
+      },
+      {
+        name:'Margaret Thatcher',
+        achievement:{en:'Former Prime Minister, United Kingdom', ru:'Экс-премьер-министр Великобритании'},
+        note:{en:'Iron will, zero compromise', ru:'Железная воля, никаких компромиссов'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Margaret_Thatcher_stock_portrait_%28cropped%29.jpg/240px-Margaret_Thatcher_stock_portrait_%28cropped%29.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'MT'
+      },
+      {
+        name:'Elon Musk',
+        achievement:{en:'CEO of Tesla and SpaceX', ru:'CEO Tesla и SpaceX'},
+        note:{en:'Intense, goal-obsessed disruptor', ru:'Интенсивный новатор, одержимый целями'},
+        photo:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80', /* ADD YOUR PHOTO HERE */
+        initials:'EM'
+      },
+      {
+        name:'Gordon Ramsay',
+        achievement:{en:'Michelin-star chef and TV host', ru:'Шеф со звёздами Мишлен и TV-ведущий'},
+        note:{en:'Direct, demanding, sky-high standards', ru:'Прямой, требовательный, запредельные стандарты'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gordon_Ramsay.jpg/240px-Gordon_Ramsay.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'GR'
+      }
+    ]
   },
+
   yellow: {
-    key: 'yellow', hex: '#D4AC0D', light: '#FEFDE8', mid: '#F1C40F', textColor: '#9A7D0A',
-    label: { en: 'Yellow Vector', ru: 'Желтый вектор' },
-    sub: { en: 'Inspiring • Creative • Socially Fluid', ru: 'Вдохновляющий • Креативный • Социально гибкий' },
+    key:'yellow', hex:'#D4AC0D', light:'#FEFDE8',
+    border:'rgba(212,172,13,0.25)', textColor:'#9A7D0A',
+    label:     {en:'Yellow', ru:'Жёлтый'},
+    archetype: {en:'Inspiring · Creative · Social', ru:'Вдохновляющий · Творческий · Общительный'},
     summary: {
-      en: 'Yellow profiles navigate architectures via human engagement and creative synthesis. You thrive in unconstrained conceptual environments, deploying high-influence communication matrices.',
-      ru: 'Желтые профили выстраивают процессы через вовлечение людей и творческий синтез. Вы расцветаете в свободной концептуальной среде, используя сильные навыки коммуникации.'
-    }
+      en:'Yellow personalities radiate energy, optimism, and creativity. Natural cheerleaders and storytellers, they inspire others through sheer enthusiasm. Their superpower is infectious motivation. Their blind spot is a tendency to start more than they finish.',
+      ru:'Жёлтые личности излучают энергию, оптимизм и творчество. Прирождённые вдохновители, заряжающие других энтузиазмом. Их суперсила — заразительная мотивация. Слабое место — склонность начинать больше, чем заканчивать.'
+    },
+    traits: {
+      en:['Enthusiastic','Creative','Persuasive','Optimistic','Spontaneous','Talkative','Playful'],
+      ru:['Энтузиаст','Творческий','Убедительный','Оптимистичный','Спонтанный','Общительный','Игривый']
+    },
+    celebrities: [
+      {
+        name:'Jim Carrey',
+        achievement:{en:'Actor and comedian', ru:'Актёр и комик'},
+        note:{en:'Unbounded energy and creative expression', ru:'Неограниченная энергия и творческое самовыражение'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Jim_Carrey_2008.jpg/240px-Jim_Carrey_2008.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'JC'
+      },
+      {
+        name:'Robin Williams',
+        achievement:{en:'Oscar-winning actor and comedian', ru:'Актёр-лауреат Оскара и комик'},
+        note:{en:'Spontaneous genius, pure joy', ru:'Спонтанный гений, чистая радость'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Robin_Williams_2011a_%282%29.jpg/240px-Robin_Williams_2011a_%282%29.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'RW'
+      },
+      {
+        name:'Oprah Winfrey',
+        achievement:{en:'Media mogul and philanthropist', ru:'Медиамагнат и меценат'},
+        note:{en:'Warm, inspiring, endlessly connected', ru:'Тёплая, вдохновляющая, безгранично коммуникабельная'},
+        photo:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80', /* ADD YOUR PHOTO HERE */
+        initials:'OW'
+      },
+      {
+        name:'Will Smith',
+        achievement:{en:'Actor, rapper and producer', ru:'Актёр, рэпер и продюсер'},
+        note:{en:'Charming, optimistic people-magnet', ru:'Обаятельный, оптимистичный магнит для людей'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Will_Smith_2011.jpg/240px-Will_Smith_2011.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'WS'
+      }
+    ]
   },
+
   green: {
-    key: 'green', hex: '#1E8449', light: '#E9F7EF', mid: '#27AE60', textColor: '#1E8449',
-    label: { en: 'Green Vector', ru: 'Зеленый вектор' },
-    sub: { en: 'Stable • Patient • Relational Anchor', ru: 'Стабильный • Терпеливый • Надежная опора' },
+    key:'green', hex:'#1E8449', light:'#E9F7EF',
+    border:'rgba(30,132,73,0.2)', textColor:'#1E8449',
+    label:     {en:'Green', ru:'Зелёный'},
+    archetype: {en:'Stable · Patient · Empathetic', ru:'Стабильный · Терпеливый · Эмпатичный'},
     summary: {
-      en: 'Green profiles prioritize system harmony, structural consistency, and relational equity. You excel at maintaining consensus models and protecting core team welfare under environmental pressure.',
-      ru: 'Зеленые профили ценят гармонию в системе, стабильность структур и сплоченность отношений. Вы мастерски находите консенсус и защищаете благополучие команды.'
-    }
+      en:'Green personalities are the quiet foundation beneath every high-functioning team. Patient, loyal, and deeply empathetic, they create psychological safety that lets others take risks. Their superpower is building bonds that last. Their blind spot is reluctance to assert their own needs.',
+      ru:'Зелёные личности — тихий фундамент любой высокоэффективной команды. Терпеливые, лояльные и глубоко эмпатичные, они создают психологическую безопасность. Их суперсила — создание прочных связей. Слабое место — нежелание отстаивать собственные потребности.'
+    },
+    traits: {
+      en:['Patient','Loyal','Empathetic','Reliable','Harmonious','Steady','Supportive'],
+      ru:['Терпеливый','Лояльный','Эмпатичный','Надёжный','Гармоничный','Устойчивый','Поддерживающий']
+    },
+    celebrities: [
+      {
+        name:'Keanu Reeves',
+        achievement:{en:'Actor — The Matrix, John Wick', ru:'Актёр — Матрица, Джон Уик'},
+        note:{en:'Calm, kind, universally beloved', ru:'Спокойный, добрый, всеобщий любимец'},
+        photo:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80', /* ADD YOUR PHOTO HERE */
+        initials:'KR'
+      },
+      {
+        name:'Fred Rogers',
+        achievement:{en:'Host of Mister Rogers Neighborhood', ru:'Ведущий «Соседства мистера Роджерса»'},
+        note:{en:'Gentle, patient, nurturing warmth', ru:'Мягкий, терпеливый, заботливая теплота'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Fred_Rogers%2C_late_1960s.jpg/240px-Fred_Rogers%2C_late_1960s.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'FR'
+      },
+      {
+        name:'Nelson Mandela',
+        achievement:{en:'Former President of South Africa', ru:'Экс-президент ЮАР'},
+        note:{en:'Patient, forgiving, unshakeable resolve', ru:'Терпеливый, всепрощающий, несгибаемый'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Nelson_Mandela_1994.jpg/240px-Nelson_Mandela_1994.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'NM'
+      },
+      {
+        name:'Dolly Parton',
+        achievement:{en:'Country music icon and philanthropist', ru:'Икона кантри-музыки и меценат'},
+        note:{en:'Warm, steady, generous to all', ru:'Тёплая, надёжная, щедрая ко всем'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Dolly_Parton_in_1978.jpg/240px-Dolly_Parton_in_1978.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'DP'
+      }
+    ]
   },
+
   blue: {
-    key: 'blue', hex: '#1A5276', light: '#EBF5FB', mid: '#2980B9', textColor: '#1A5276',
-    label: { en: 'Blue Vector', ru: 'Синий вектор' },
-    sub: { en: 'Analytical • Precise • Structural Architect', ru: 'Аналитический • Точный • Архитектор структур' },
+    key:'blue', hex:'#1A5276', light:'#EBF5FB',
+    border:'rgba(26,82,118,0.2)', textColor:'#1A5276',
+    label:     {en:'Blue', ru:'Синий'},
+    archetype: {en:'Analytical · Structured · Precise', ru:'Аналитический · Структурированный · Точный'},
     summary: {
-      en: 'Blue profiles filter reality through objective data validation layers. You operate with absolute logic, constructing flawless error-correction frameworks and holding systems to rigorous standards.',
-      ru: 'Синие профили фильтруют реальность через объективные данные и аналитику. Вы действуете с абсолютной логикой, создавая надежные системы без системных ошибок.'
-    }
+      en:'Blue personalities are the architects of accuracy. Methodical, systematic, and thorough, they catch errors others miss and build systems that outlast everyone. Their superpower is precision under pressure. Their blind spot is analysis paralysis.',
+      ru:'Синие личности — архитекторы точности. Методичные, системные и тщательные, они замечают ошибки, которые другие упускают. Их суперсила — точность под давлением. Слабое место — паралич анализа.'
+    },
+    traits: {
+      en:['Analytical','Detail-oriented','Systematic','Precise','Reserved','Thorough','Logical'],
+      ru:['Аналитический','Внимательный к деталям','Системный','Точный','Сдержанный','Тщательный','Логичный']
+    },
+    celebrities: [
+      {
+        name:'Bill Gates',
+        achievement:{en:'Co-founder of Microsoft', ru:'Сооснователь Microsoft'},
+        note:{en:'Systems thinker, meticulous planner', ru:'Системный мыслитель, дотошный планировщик'},
+        photo:'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80', /* ADD YOUR PHOTO HERE */
+        initials:'BG'
+      },
+      {
+        name:'Albert Einstein',
+        achievement:{en:'Nobel Laureate in Physics', ru:'Лауреат Нобелевской премии по физике'},
+        note:{en:'Deep focus, first-principles reasoning', ru:'Глубокая концентрация, рассуждение от первых принципов'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Albert_Einstein_Head.jpg/240px-Albert_Einstein_Head.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'AE'
+      },
+      {
+        name:'Warren Buffett',
+        achievement:{en:'Chairman and CEO, Berkshire Hathaway', ru:'Председатель и CEO Berkshire Hathaway'},
+        note:{en:'Patient, data-driven, disciplined', ru:'Терпеливый, опирающийся на данные, дисциплинированный'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Warren_Buffett_KU_Visit.jpg/240px-Warren_Buffett_KU_Visit.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'WB'
+      },
+      {
+        name:'Marie Curie',
+        achievement:{en:'Two-time Nobel Laureate', ru:'Двукратный лауреат Нобелевской премии'},
+        note:{en:'Relentless rigour and methodical brilliance', ru:'Неустанная строгость и методичный блеск'},
+        photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Marie_Curie_c1920.jpg/240px-Marie_Curie_c1920.jpg', /* ADD YOUR PHOTO HERE */
+        initials:'MC'
+      }
+    ]
   }
 };
 
-var BLEND_SUMMARIES = {
-  'red-yellow': {
-    title: { en: 'The Kinetic Catalyst', ru: 'Кинетический катализатор' },
-    summary: { en: 'You deploy high execution velocity coupled with charismatic rallying mechanics. You cross lines rapidly while ensuring team compliance via enthusiasm.', ru: 'Вы сочетаете высокую скорость работы с мощным харизматичным лидерством. Быстро достигаете целей, зажигая команду своим энтузиазмом.' }
-  },
-  'red-blue': {
-    title: { en: 'The Strategic Director', ru: 'Стратегический директор' },
-    summary: { en: 'An elite balance of aggressive outcome targeting and surgical precision. You demand maximum structural optimization and absolute metrics compliance.', ru: 'Идеальный баланс агрессивного стремления к результату и хирургической точности. Вы требуете полной оптимизации процессов и идеальных метрик.' }
-  },
-  'yellow-blue': {
-    title: { en: 'The System Conceptualist', ru: 'Системный концептуалист' },
-    summary: { en: 'You dream at enterprise scale but calculate structural limits flawlessly. A rare engine capable of wild innovation paired with deep verification layers.', ru: 'Вы мыслите масштабно, но безошибочно рассчитываете системные ограничения. Редкий тип лидера, способный на смелые инновации с глубокой аналитической проверкой.' }
-  },
-  'green-blue': {
-    title: { en: 'The Structural Anchor', ru: 'Структурный якорь' },
-    summary: { en: 'Incredible internal alignment centered on quality preservation and risk elimination. Methodical, immensely dependable, and deeply thorough.', ru: 'Высокая внутренняя дисциплина, направленная на сохранение качества и исключение рисков. Методичный, невероятно надежный и глубокий аналитик.' }
-  }
-};
-
+/* QUESTIONS (12 questions — scenario/text: {en,ru}, option.color: string) */
 var QUESTIONS = [
   {
-    scenario: { en: 'Tactical Pivot', ru: 'Тактический кризис' },
-    text: { en: 'A mission critical delivery timeline is moved forward aggressively. Your core reaction is to:', ru: 'Критически важный дедлайн проекта резко переносится на ранний срок. Ваша первая реакция:' },
-    options: [
-      { text: { en: 'Reallocate parameters, demand immediate pacing adjustment, and push through.', ru: 'Перестроить параметры, потребовать немедленного ускорения и прорваться вперед.' }, color: 'red' },
-      { text: { en: 'Convene an emergency sync, amplify collective motivation, and discover shortcuts.', ru: 'Собрать экстренную встречу, поднять общую мотивацию и найти нестандартные обходные пути.' }, color: 'yellow' },
-      { text: { en: 'Evaluate personal bandwidth across the unit and protect resource stability.', ru: 'Оценить уровень нагрузки на каждого человека в команде и защитить людей от выгорания.' }, color: 'green' },
-      { text: { en: 'Audit the execution map, catalog risk indices, and build alternative paths.', ru: 'Провести полный аудит плана работы, зафиксировать индексы рисков и составить резервный график.' }, color: 'blue' }
+    scenario:{en:'At work', ru:'На работе'},
+    text:{en:'A major project deadline has been moved up by two weeks. Your immediate instinct is to…',
+          ru:'Крайний срок важного проекта сдвинули на две недели вперёд. Ваш первый порыв…'},
+    options:[
+      {color:'red',    text:{en:'Take charge right away: assign tasks, cut scope, and push the team to move faster.', ru:'Взять управление немедленно: распределить задачи, урезать объём и подтолкнуть команду двигаться быстрее.'}},
+      {color:'yellow', text:{en:"Call an all-hands, rally the team's energy, and brainstorm creative shortcuts together.", ru:'Собрать всех, зарядить команду энергией и совместно придумать творческие решения.'}},
+      {color:'green',  text:{en:'Quietly check in with each team member to understand their stress and offer support.', ru:'Тихо поговорить с каждым членом команды, понять их стресс и предложить поддержку.'}},
+      {color:'blue',   text:{en:'Sit down alone, map out a revised timeline, and identify every risk before saying a word.', ru:'Сесть в одиночестве, составить пересмотренный план и выявить каждый риск прежде чем говорить.'}}
     ]
   },
   {
-    scenario: { en: 'Friction Management', ru: 'Управление конфликтом' },
-    text: { en: 'An cross functional colleague repeatedly interrupts your process presentations. You:', ru: 'Коллега из соседнего отдела постоянно перебивает вас на презентации рабочих процессов. Вы:' },
-    options: [
-      { text: { en: 'Halt proceedings immediately and state boundaries with direct posture.', ru: 'Немедленно остановить обсуждение и твердо обозначить личные границы.' }, color: 'red' },
-      { text: { en: 'Defuse the space with humor, then realign the conversation dynamics offline.', ru: 'Разрядить обстановку шуткой, а затем обсудить поведение коллеги наедине в неформальной обстановке.' }, color: 'yellow' },
-      { text: { en: 'Absorb the disruption calmly to secure room cohesion, ignoring personal slight.', ru: 'Спокойно выслушать, чтобы сохранить общую гармонию в помещении, игнорируя колкость.' }, color: 'green' },
-      { text: { en: 'Document deviations from the protocol and address it via structural lines.', ru: 'Зафиксировать нарушения регламента встречи и поднять этот вопрос строго по официальным каналам.' }, color: 'blue' }
+    scenario:{en:'In conflict', ru:'В конфликте'},
+    text:{en:'A colleague repeatedly interrupts you in meetings. You handle it by…',
+          ru:'Коллега раз за разом перебивает вас на совещаниях. Вы реагируете…'},
+    options:[
+      {color:'red',    text:{en:'Addressing it head-on the next time it happens and telling them clearly to let you finish.', ru:'При следующем случае прямо сказать, чтобы дали вам договорить.'}},
+      {color:'yellow', text:{en:'Making a light joke to defuse the tension, then having a relaxed chat afterward.', ru:'Разрядить напряжение лёгкой шуткой, а потом поговорить неформально.'}},
+      {color:'green',  text:{en:'Letting it go to preserve the harmony, even though it quietly bothers you.', ru:'Промолчать ради сохранения гармонии, хотя внутри это задевает.'}},
+      {color:'blue',   text:{en:'Documenting the pattern and raising it with your manager with specific dated examples.', ru:'Зафиксировать факты и обратиться к руководителю с конкретными датированными примерами.'}}
     ]
   },
   {
-    scenario: { en: 'Ambiguity Resolution', ru: 'Разрешение неопределенности' },
-    text: { en: 'You are presented with two competing career pathways with mismatched data parameters. You choose via:', ru: 'Вам предлагают два разных варианта развития карьеры с противоречивыми вводными данными. Вы выбираете на основе:' },
-    options: [
-      { text: { en: 'Velocity of upward progression and scope of operational authority.', ru: 'Скорости карьерного роста и объема реальных управленческих полномочий.' }, color: 'red' },
-      { text: { en: 'Cultural vibrancy, collaborative potential, and expressive freedom.', ru: 'Яркости корпоративной культуры, потенциала для коллабораций и свободы самовыражения.' }, color: 'yellow' },
-      { text: { en: 'Long term tenure security, institutional safety, and group alignment.', ru: 'Долгосрочной стабильности позиции, гарантий безопасности и хороших отношений в коллективе.' }, color: 'green' },
-      { text: { en: 'Statistical growth evaluation modeling and structural risk sheets.', ru: 'Моделирования статистических показателей роста и детальных таблиц анализа рисков.' }, color: 'blue' }
+    scenario:{en:'Decision making', ru:'Принятие решений'},
+    text:{en:'You have two job offers to choose between. How do you decide?',
+          ru:'У вас два предложения о работе. Как вы выбираете?'},
+    options:[
+      {color:'red',    text:{en:'Go with whichever role gives you more authority and a faster path to the top.', ru:'Выбрать роль с большими полномочиями и более быстрым путём к вершине.'}},
+      {color:'yellow', text:{en:'Pick the team and culture that feels the most fun, vibrant, and socially energetic.', ru:'Выбрать команду и культуру, которая кажется наиболее живой и яркой.'}},
+      {color:'green',  text:{en:'Choose the one where you will feel secure and where the people seem genuinely kind.', ru:'Выбрать место, где вы будете в безопасности и где люди искренне добры.'}},
+      {color:'blue',   text:{en:'Build a detailed comparison covering salary, benefits, growth trajectory, and risk.', ru:'Составить детальное сравнение по зарплате, льготам, перспективам роста и рискам.'}}
+    ]
+  },
+  {
+    scenario:{en:'Under pressure', ru:'Под давлением'},
+    text:{en:'You are presenting to senior leadership and realise you have made an error in your slides. You…',
+          ru:'Вы делаете презентацию для руководства и замечаете ошибку в слайдах. Вы…'},
+    options:[
+      {color:'red',    text:{en:'Own it immediately, correct it out loud, and keep going without breaking pace.', ru:'Тут же признать ошибку, громко поправить её и продолжить без потери темпа.'}},
+      {color:'yellow', text:{en:'Laugh it off with a self-deprecating comment and move on without making it a big deal.', ru:'Обыграть это самоиронией и двигаться дальше, не раздувая проблему.'}},
+      {color:'green',  text:{en:'Feel your heart sink, but carry on calmly and worry about it afterward.', ru:'Почувствовать, как сердце уходит в пятки, но спокойно продолжить и переживать позже.'}},
+      {color:'blue',   text:{en:'Stop, acknowledge the error precisely, state the correct figure, and then continue.', ru:'Остановиться, точно обозначить ошибку, назвать правильные данные и продолжить.'}}
+    ]
+  },
+  {
+    scenario:{en:'Social settings', ru:'Социальные ситуации'},
+    text:{en:'You arrive alone at a large networking event where you know nobody. You…',
+          ru:'Вы пришли один на большой нетворкинг-ивент, где никого не знаете. Вы…'},
+    options:[
+      {color:'red',    text:{en:'Walk straight up to the most influential person in the room and introduce yourself with purpose.', ru:'Сразу направиться к самому влиятельному человеку и целенаправленно представиться.'}},
+      {color:'yellow', text:{en:'Dive into conversations enthusiastically. This is your natural habitat.', ru:'С энтузиазмом включиться в разговоры. Это ваша стихия.'}},
+      {color:'green',  text:{en:'Find one person who also looks uncertain and build a genuine one-on-one connection.', ru:'Найти человека, который тоже выглядит неуверенно, и установить искренний контакт.'}},
+      {color:'blue',   text:{en:'Observe the room carefully, then approach the person most relevant to your professional goals.', ru:'Внимательно осмотреть зал, затем подойти к наиболее профессионально значимому человеку.'}}
+    ]
+  },
+  {
+    scenario:{en:'Receiving feedback', ru:'Получение обратной связи'},
+    text:{en:'Someone gives you critical feedback on work you are genuinely proud of. Your first reaction is…',
+          ru:'Кто-то критикует вашу работу, которой вы по-настоящему гордитесь. Первая реакция…'},
+    options:[
+      {color:'red',    text:{en:'Push back if you disagree. You are not afraid to defend your choices.', ru:'Возразить, если не согласны. Вы не боитесь отстаивать свои решения.'}},
+      {color:'yellow', text:{en:'Thank them enthusiastically and immediately spin it into something positive.', ru:'Горячо поблагодарить и тут же переосмыслить это как нечто позитивное.'}},
+      {color:'green',  text:{en:'Feel hurt on the inside, but smile graciously and absorb every word.', ru:'Почувствовать обиду внутри, но мягко улыбнуться и впитать каждое слово.'}},
+      {color:'blue',   text:{en:'Ask a series of precise follow-up questions to fully understand their reasoning.', ru:'Задать ряд точных уточняющих вопросов, чтобы полностью понять логику критика.'}}
+    ]
+  },
+  {
+    scenario:{en:'Free time at work', ru:'Свободное время на работе'},
+    text:{en:'Your team has a full week of unstructured time to work on anything. You…',
+          ru:'У вашей команды есть целая неделя неструктурированного времени. Вы…'},
+    options:[
+      {color:'red',    text:{en:'Identify the highest-impact project and push the team to execute it.', ru:'Определить самый значимый проект и подтолкнуть команду к его реализации.'}},
+      {color:'yellow', text:{en:'Organise a lively brainstorm and get everyone excited about something new.', ru:'Организовать живой мозговой штурм и зажечь всех чем-то новым.'}},
+      {color:'green',  text:{en:'Ask the team what they actually need. Sometimes they just need rest.', ru:'Спросить команду, что им действительно нужно. Иногда это просто отдых.'}},
+      {color:'blue',   text:{en:'Use the time to research and fix underlying problems no one has tackled yet.', ru:'Использовать время на исследование и устранение глубинных проблем.'}}
+    ]
+  },
+  {
+    scenario:{en:'Leadership style', ru:'Стиль лидерства'},
+    text:{en:'As a leader, what would your team say matters most to you?',
+          ru:'Как лидер, что бы ваша команда назвала самым важным для вас?'},
+    options:[
+      {color:'red',    text:{en:'"Results. They push us hard and hold everyone accountable."', ru:'«Результаты. Они требуют от нас максимума и добиваются ответственности от каждого.»'}},
+      {color:'yellow', text:{en:'"Enthusiasm. They make the work exciting and never let the energy drop."', ru:'«Энтузиазм. Они делают работу захватывающей и не дают энергии угасать.»'}},
+      {color:'green',  text:{en:'"People. They genuinely care how each of us is doing."', ru:'«Люди. Им искренне важно, как чувствует себя каждый из нас.»'}},
+      {color:'blue',   text:{en:'"Standards. They care deeply about quality and doing things the right way."', ru:'«Стандарты. Им очень важны качество и правильный подход к делу.»'}}
+    ]
+  },
+  {
+    scenario:{en:'When things go wrong', ru:'Когда что-то идёт не так'},
+    text:{en:'A project you led has failed publicly. Your first instinct is to…',
+          ru:'Проект под вашим руководством провалился публично. Первый порыв…'},
+    options:[
+      {color:'red',    text:{en:'Take accountability fast, regroup the team, and begin fixing it immediately.', ru:'Быстро взять ответственность, перегруппировать команду и немедленно начать исправлять.'}},
+      {color:'yellow', text:{en:"Reframe the narrative: find the learning and keep everyone's spirits high.", ru:'Переосмыслить ситуацию: найти урок и поддержать боевой дух команды.'}},
+      {color:'green',  text:{en:'Check in on how the team is feeling before anything else.', ru:'Прежде всего проверить, как чувствует себя команда.'}},
+      {color:'blue',   text:{en:'Conduct a thorough root-cause analysis before drawing any conclusions.', ru:'Провести тщательный анализ первопричин, прежде чем делать выводы.'}}
+    ]
+  },
+  {
+    scenario:{en:'Problem solving', ru:'Решение проблем'},
+    text:{en:'Your team is stuck on a hard problem with no obvious answer. You tend to…',
+          ru:'Ваша команда застряла на сложной задаче без очевидного решения. Вы обычно…'},
+    options:[
+      {color:'red',    text:{en:'Make a call with the best available information and adjust course as you go.', ru:'Принять решение на основе лучшей имеющейся информации и корректировать курс по ходу.'}},
+      {color:'yellow', text:{en:'Bring people together and trust that group energy will find a path.', ru:'Собрать людей вместе и верить, что групповая энергия найдёт выход.'}},
+      {color:'green',  text:{en:'Create a calm space for the quieter voices. The answer is often already in the room.', ru:'Создать спокойную атмосферу для тихих голосов. Ответ часто уже есть в команде.'}},
+      {color:'blue',   text:{en:'Break the problem into components, gather more data, and work through it step by step.', ru:'Разбить проблему на составляющие, собрать больше данных и работать методично.'}}
+    ]
+  },
+  {
+    scenario:{en:'Rules and policies', ru:'Правила и политики'},
+    text:{en:'There is an outdated company policy slowing your team down. You…',
+          ru:'В компании есть устаревшая политика, тормозящая вашу команду. Вы…'},
+    options:[
+      {color:'red',    text:{en:'Push leadership to change it and keep pushing until something moves.', ru:'Давить на руководство и не останавливаться, пока ситуация не сдвинется.'}},
+      {color:'yellow', text:{en:'Rally others who feel the same and build enthusiasm for changing it.', ru:'Объединить единомышленников и создать волну энтузиазма за перемены.'}},
+      {color:'green',  text:{en:'Work within it for now. You do not want to cause friction.', ru:'Пока работать в её рамках. Вы не хотите создавать трений.'}},
+      {color:'blue',   text:{en:'Draft a detailed proposal with data and rationale, then present through the right channels.', ru:'Составить детальное предложение с данными и представить по нужным каналам.'}}
+    ]
+  },
+  {
+    scenario:{en:'After a draining week', ru:'После изматывающей недели'},
+    text:{en:'It is Friday evening. The week has been exhausting. To recharge, you…',
+          ru:'Пятничный вечер. Неделя была изматывающей. Чтобы восстановиться, вы…'},
+    options:[
+      {color:'red',    text:{en:'Use the weekend to get ahead on something important.', ru:'Используете выходные, чтобы продвинуться вперёд в чём-то важном.'}},
+      {color:'yellow', text:{en:'Call friends, make plans, and fill the weekend with people and experiences.', ru:'Звоните друзьям, строите планы и наполняете выходные людьми и впечатлениями.'}},
+      {color:'green',  text:{en:'Spend quiet time with the people closest to you.', ru:'Проводите тихое время с самыми близкими.'}},
+      {color:'blue',   text:{en:'Have time alone to read, think, and process. Solitude restores you.', ru:'Уединяетесь, чтобы читать, думать и осмыслять. Одиночество восстанавливает.'}}
     ]
   }
 ];
 
-var currentIdx = 0;
-var userAnswers = [];
-var shuffledOptions = [];
-var activeSelection = null;
-
-function toggleLanguage() {
-  L = (L === 'en') ? 'ru' : 'en';
-  document.getElementById('lang-toggle').textContent = (L === 'en') ? 'RU' : 'EN';
-  updateUILabels();
-  
-  if (!document.getElementById('view-quiz').classList.contains('hidden')) {
-    refreshQuestionText();
-  } else if (!document.getElementById('view-guide').classList.contains('hidden')) {
-    renderGuide();
-  } else if (!document.getElementById('view-results').classList.contains('hidden')) {
-    renderResults();
-  }
-}
-
-function updateUILabels() {
-  var d = STRINGS[L];
-  document.getElementById('lbl-title').innerHTML = d.title;
-  document.getElementById('lbl-desc').textContent = d.desc;
-  document.getElementById('lbl-start-btn').textContent = d.startBtn;
-  document.getElementById('lbl-btn-retry').textContent = d.retry;
-  document.getElementById('lbl-btn-guide').textContent = d.explore;
-  document.getElementById('lbl-guide-head').textContent = d.guideHead;
-  document.getElementById('lbl-res-head').textContent = d.resHead;
-  document.getElementById('dom-next').textContent = d.continueBtn;
-  document.getElementById('lbl-c-red').textContent = d.red;
-  document.getElementById('lbl-c-yellow').textContent = d.yellow;
-  document.getElementById('lbl-c-green').textContent = d.green;
-  document.getElementById('lbl-c-blue').textContent = d.blue;
-}
-
-function setView(view) {
-  var views = ['landing', 'guide', 'quiz', 'results'];
-  for (var i = 0; i < views.length; i++) {
-    document.getElementById('view-' + views[i]).classList.add('hidden');
-  }
-  document.getElementById('view-' + view).classList.remove('hidden');
-  
-  var btns = document.querySelectorAll('.nav-btn');
-  for (var j = 0; j < btns.length; j++) {
-    btns[j].classList.remove('active');
-  }
-  if (view === 'landing' || view === 'quiz' || view === 'results') {
-    document.getElementById('nav-home').classList.add('active');
-  }
-  if (view === 'guide') {
-    document.getElementById('nav-guide').classList.add('active');
-    renderGuide();
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function startQuiz() {
-  currentIdx = 0;
-  userAnswers = [];
-  setView('quiz');
-  showQuestion();
-}
-
-function shuffle(arr) {
-  var a = arr.slice();
-  for (var i = a.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var temp = a[i];
-    a[i] = a[j];
-    a[j] = temp;
-  }
-  return a;
-}
-
-function showQuestion() {
-  var q = QUESTIONS[currentIdx];
-  shuffledOptions = shuffle(q.options);
-  activeSelection = null;
-  document.getElementById('dom-next').disabled = true;
-  document.getElementById('progress-bar').style.width = ((currentIdx / QUESTIONS.length) * 100) + '%';
-  refreshQuestionText();
-}
-
-function refreshQuestionText() {
-  var q = QUESTIONS[currentIdx];
-  document.getElementById('dom-scenario').textContent = q.scenario[L];
-  document.getElementById('dom-question').textContent = q.text[L];
-  
-  var container = document.getElementById('dom-options');
-  container.innerHTML = '';
-  
-  shuffledOptions.forEach(function(opt, idx) {
-    var btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    if (activeSelection === opt.color) {
-      btn.className += ' selected';
-    }
-    btn.innerHTML = '<span class="opt-let">' + String.fromCharCode(65 + idx) + '</span> <span>' + opt.text[L] + '</span>';
-    btn.onclick = function() { handleSelect(opt.color); };
-    container.appendChild(btn);
-  });
-}
-
-function handleSelect(color) {
-  activeSelection = color;
-  document.getElementById('dom-next').disabled = false;
-  var btns = document.querySelectorAll('.opt-btn');
-  shuffledOptions.forEach(function(opt, idx) {
-    if (opt.color === color) {
-      btns[idx].classList.add('selected');
-    } else {
-      btns[idx].classList.remove('selected');
-    }
-  });
-}
-
-function handleNext() {
-  if (!activeSelection) return;
-  userAnswers.push(activeSelection);
-  currentIdx++;
-  if (currentIdx >= QUESTIONS.length) {
-    calculateAndShowResults();
-  } else {
-    showQuestion();
-  }
-}
-
-function renderGuide() {
-  var t = document.getElementById('guide-target');
-  t.innerHTML = '';
-  Object.keys(COLORS).forEach(function(k) {
-    var c = COLORS[k];
-    var celebsHtml = CELEBRITIES[k].map(function(cel) {
-      return (
-        '<div class="cel-card">' +
-          '<img src="' + cel.img + '" class="cel-img" alt="' + cel.name + '"/>' +
-          '<div>' +
-            '<div class="cel-name">' + cel.name + '</div>' +
-            '<div class="cel-badge">' + cel.badge[L] + '</div>' +
-          '</div>' +
-        '</div>'
-      );
-    }).join('');
-
-    var card = document.createElement('div');
-    card.className = 'g-card';
-    card.innerHTML = 
-      '<div class="g-banner" style="background:' + c.hex + ';"></div>' +
-      '<div class="g-hdr">' +
-        '<div class="g-circle" style="background:' + c.hex + ';">' + c.label[L].charAt(0) + '</div>' +
-        '<div>' +
-          '<div class="g-t1" style="color:' + c.hex + ';">' + c.label[L] + '</div>' +
-          '<div class="g-t2">' + c.sub[L] + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="g-body">' +
-        '<p class="g-desc">' + c.summary[L] + '</p>' +
-        '<div class="cel-grid">' + celebsHtml + '</div>' +
-      '</div>';
-    t.appendChild(card);
-  });
-}
-
-function calculateAndShowResults() {
-  setView('results');
-  
-  var counts = { red: 0, yellow: 0, green: 0, blue: 0 };
-  userAnswers.forEach(function(a) { counts[a]++; });
-  
-  var total = userAnswers.length;
-  var sorted = Object.keys(COLORS).map(function(k) {
-    return Object.assign({}, COLORS[k], {
-      count: counts[k],
-      pct: total > 0 ? Math.round((counts[k] / total) * 100) : 0
-    });
-  }).sort(function(a, b) { return b.count - a.count; });
-  
-  var dominant = sorted[0];
-  var second   = sorted[1];
-  
-  document.getElementById('dom-res-blend-title').textContent = dominant.label[L] + ' + ' + second.label[L];
-  
-  /* ── Generate dynamic color-stop vectors ── */
-  var gradId = 'silGrad_' + Math.random().toString(36).substr(2,9);
-  var accumulatedPct = 0;
-  var stopsMarkup = '';
-  
-  var revSorted = sorted.slice().reverse();
-  revSorted.forEach(function(c) {
-    if (c.pct > 0) {
-      stopsMarkup += '<stop offset="' + accumulatedPct + '%" stop-color="' + c.hex + '" />';
-      accumulatedPct += c.pct;
-      stopsMarkup += '<stop offset="' + accumulatedPct + '%" stop-color="' + c.hex + '" />';
-    }
-  });
-  if (!stopsMarkup) {
-    stopsMarkup = '<stop offset="0%" stop-color="#E8E6E0"/><stop offset="100%" stop-color="#E8E6E0"/>';
-  }
-  
-  /* ── Draw human anatomy shape ── */
-  document.getElementById('silhouette-container').innerHTML = 
-    '<svg viewBox="0 0 100 240" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-      '<defs>' +
-        '<linearGradient id="' + gradId + '" x1="0%" y1="100%" x2="0%" y2="0%">' +
-          stopsMarkup +
-        '</linearGradient>' +
-      '</defs>' +
-      '<path d="M50,45 C57.7,45 64,38.7 64,31 C64,23.3 57.7,17 50,17 C42.3,17 36,23.3 36,31 C36,38.7 42.3,45 50,45 Z M50,52 C63.2,52 74,62.8 74,76 L74,120 C74,124.4 70.4,128 66,128 C61.6,128 58,124.4 58,120 L58,92 L55,92 L55,215 C55,220.5 50.5,225 45,225 C39.5,225 35,220.5 35,215 L35,150 L31,150 L31,215 C31,220.5 26.5,225 21,225 C15.5,225 11,220.5 11,215 L11,92 L8,92 L8,120 C8,124.4 4.4,128 0,128 C-4.4,128 -8,124.4 -8,120 L-8,76 C-8,62.8 2.8,52 16,52 L50,52 Z" ' +
-            'fill="url(#' + gradId + ')" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"/>' +
-    '</svg>';
-
-  /* ── Append legend parameters ── */
-  document.getElementById('silhouette-legend').innerHTML = sorted.map(function(c) {
-    return (
-      '<div class="sil-legend-item">' +
-        '<div class="sil-legend-dot" style="background:' + c.hex + ';"></div>' +
-        '<span style="color:' + c.textColor + ';">' + c.label[L] + '</span>' +
-        '<span style="color:var(--muted);">' + c.pct + '%</span>' +
-      '</div>'
-    );
-  }).join('');
-
-  /* ── Build indicator metrics charts ── */
-  document.getElementById('score-bars').innerHTML = sorted.map(function(c, idx) {
-    return (
-      '<div class="score-row">' +
-        '<div class="score-label"><div class="score-dot" style="background:' + c.hex + ';"></div>' + c.label[L] + '</div>' +
-        '<div class="score-track"><div class="score-fill" style="width:' + c.pct + '%; background:' + c.hex + '; animation-delay:' + (0.3 + idx * 0.1) + 's;"></div></div>' +
-        '<div class="score-pct">' + c.pct + '%</div>' +
-      '</div>'
-    );
-  }).join('');
-
-  /* ── Match multi-language copy combinations ── */
-  var bk = dominant.key + '-' + second.key;
-  var pk = dominant.key + '-' + dominant.key;
-  var blend = BLEND_SUMMARIES[bk] || BLEND_SUMMARIES[pk] || {
-    title: { en: dominant.label.en + ' and ' + second.label.en + ' Blend', ru: 'Смесь ' + dominant.label.ru + ' и ' + second.label.ru },
-    summary: { en: dominant.summary.en, ru: dominant.summary.ru }
-  };
-  document.getElementById('summary-title').textContent = blend.title[L];
-  document.getElementById('summary-text').textContent  = blend.summary[L];
-}
-
-updateUILabels();
-</script>
-</body>
-</html>
+/* BLEND SUMMARIES — title and text: {en, ru} */
+var BLEND_SUMMARIES = {
+  'red-yellow':   {title:{en:'The Energetic Commander',      ru:'Энергичный командир'},       text:{en:'You combine relentless drive with infectious enthusiasm. You can mobilise a room in minutes and execute on a vision with extraordinary speed. Watch your tendency to move so fast that details slip.', ru:'Вы сочетаете неудержимую энергию с заразительным энтузиазмом. Вы способны мобилизовать команду за минуты. Следите, чтобы детали не ускользали в спешке.'}},
+  'red-blue':     {title:{en:'The Precise Director',         ru:'Точный директор'},            text:{en:'You drive hard for results and need those results to be correct. This rare combination makes you a formidable leader who thinks strategically and executes decisively.', ru:'Вы напористо добиваетесь результатов и требуете их точности. Это редкое сочетание делает вас грозным лидером, мыслящим стратегически и действующим решительно.'}},
+  'red-green':    {title:{en:'The Assertive Protector',      ru:'Настойчивый защитник'},       text:{en:'You push hard toward your goals but ultimately do so in service of the people around you. You fight fiercely for your team yet remain more sensitive to feelings than a typical Red.', ru:'Вы настойчиво стремитесь к целям, но ради людей вокруг. Яростно сражаетесь за команду и при этом чувствительнее к эмоциям, чем ти
