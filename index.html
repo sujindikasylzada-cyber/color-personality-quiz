@@ -297,6 +297,46 @@ nav{
 footer{text-align:center;padding:2rem 1.25rem 3rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);}
 
 /* ========================================================
+   DISCLAIMER BANNER
+   ======================================================== */
+.disclaimer-banner{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-top:1.75rem;
+  padding:12px 16px;
+  background:rgba(212,172,13,0.10);
+  border:1px solid rgba(212,172,13,0.35);
+  border-left:3.5px solid var(--yellow-mid);
+  border-radius:var(--radius);
+}
+.disclaimer-icon{
+  flex-shrink:0;
+  width:18px;
+  height:18px;
+  margin-top:1px;
+  color:var(--yellow);
+}
+.disclaimer-text{
+  font-size:.78rem;
+  line-height:1.6;
+  color:var(--muted);
+  font-weight:400;
+}
+.disclaimer-text strong{
+  font-weight:600;
+  color:#9A7D0A;
+}
+@media(prefers-color-scheme:dark){
+  .disclaimer-banner{
+    background:rgba(212,172,13,0.08);
+    border-color:rgba(212,172,13,0.25);
+    border-left-color:var(--yellow-mid);
+  }
+  .disclaimer-text strong{ color:var(--yellow-mid); }
+}
+
+/* ========================================================
    DESKTOP BREAKPOINT (>= 860px)
    ======================================================== */
 @media(min-width:860px){
@@ -382,6 +422,14 @@ footer{text-align:center;padding:2rem 1.25rem 3rem;font-size:.75rem;color:var(--
         <em data-i18n="landingLine2">personality</em><br/>
         <span data-i18n="landingLine3">color.</span>
       </h1>
+      <div class="disclaimer-banner" role="note" aria-label="Disclaimer">
+        <svg class="disclaimer-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 2L2 17h16L10 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <line x1="10" y1="8.5" x2="10" y2="12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="10" cy="14.8" r="0.8" fill="currentColor"/>
+        </svg>
+        <p class="disclaimer-text" data-i18n="disclaimer"><strong>Warning:</strong> This test was made by a non-psychologist. It is for entertainment and self-reflection only: do not trust the results 100%.</p>
+      </div>
       <button class="landing-cta" onclick="startQuiz()">
         <span data-i18n="landingCta">Begin the test</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -625,7 +673,8 @@ var UI = {
     blendLabel:'Personality silhouette', resultsDominant:'Dominant',
     resultsRetake:'Retake test', resultsGuide:'Explore color guide',
     footer:'Inspired by Surrounded by Idiots · Thomas Erikson · For educational purposes only',
-    celebArchetypes:'Real-world archetypes'
+    celebArchetypes:'Real-world archetypes',
+    disclaimer:'Warning: This test was made by a non-psychologist. It is for entertainment and self-reflection only: do not trust the results 100%.'
   },
   ru: {
     navLogo:'Окружён идиотами', navHome:'Главная', navGuide:'Гид по цветам',
@@ -643,7 +692,8 @@ var UI = {
     blendLabel:'Силуэт личности', resultsDominant:'Доминирующий',
     resultsRetake:'Пройти снова', resultsGuide:'Гид по цветам',
     footer:'По мотивам «Окружён идиотами» · Томас Эриксон · Только для образовательных целей',
-    celebArchetypes:'Реальные прототипы'
+    celebArchetypes:'Реальные прототипы',
+    disclaimer:'Предупреждение: Этот тест был создан не психологом. Он предназначен исключительно для развлечения: не доверяйте результатам на 100%.'
   }
 };
 
