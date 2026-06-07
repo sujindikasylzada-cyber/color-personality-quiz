@@ -989,6 +989,318 @@ var QUESTIONS = [
 
 /* BLEND SUMMARIES — title and text: {en, ru} */
 var BLEND_SUMMARIES = {
-  'red-yellow':   {title:{en:'The Energetic Commander',      ru:'Энергичный командир'},       text:{en:'You combine relentless drive with infectious enthusiasm. You can mobilise a room in minutes and execute on a vision with extraordinary speed. Watch your tendency to move so fast that details slip.', ru:'Вы сочетаете неудержимую энергию с заразительным энтузиазмом. Вы способны мобилизовать команду за минуты. Следите, чтобы детали не ускользали в спешке.'}},
-  'red-blue':     {title:{en:'The Precise Director',         ru:'Точный директор'},            text:{en:'You drive hard for results and need those results to be correct. This rare combination makes you a formidable leader who thinks strategically and executes decisively.', ru:'Вы напористо добиваетесь результатов и требуете их точности. Это редкое сочетание делает вас грозным лидером, мыслящим стратегически и действующим решительно.'}},
-  'red-green':    {title:{en:'The Assertive Protector',      ru:'Настойчивый защитник'},       text:{en:'You push hard toward your goals but ultimately do so in service of the people around you. You fight fiercely for your team yet remain more sensitive to feelings than a typical Red.', ru:'Вы настойчиво стремитесь к целям, но ради людей вокруг. Яростно сражаетесь за команду и при этом чувствительнее к эмоциям, чем ти
+  'red-yellow':   {title:{en:'The Energetic Commander',      ru:'Энергичный командир'},
+                   text:{en:'You combine relentless drive with infectious enthusiasm. You can mobilise a room in minutes and execute on a vision with extraordinary speed. Watch your tendency to move so fast that details slip.',
+                         ru:'Вы сочетаете неудержимую энергию с заразительным энтузиазмом. Вы способны мобилизовать команду за минуты. Следите, чтобы детали не ускользали в спешке.'}},
+  'red-blue':     {title:{en:'The Precise Director',         ru:'Точный директор'},
+                   text:{en:'You drive hard for results and need those results to be correct. This rare combination makes you a formidable leader who thinks strategically and executes decisively.',
+                         ru:'Вы напористо добиваетесь результатов и требуете их точности. Это редкое сочетание делает вас грозным лидером, мыслящим стратегически и действующим решительно.'}},
+  'red-green':    {title:{en:'The Assertive Protector',      ru:'Настойчивый защитник'},
+                   text:{en:'You push hard toward your goals but ultimately do so in service of the people around you. You fight fiercely for your team yet remain more sensitive to feelings than a typical Red.',
+                         ru:'Вы настойчиво стремитесь к целям, но ради людей вокруг. Яростно сражаетесь за команду и при этом чувствительнее к эмоциям, чем типичный Красный.'}},
+  'yellow-red':   {title:{en:'The Energetic Commander',      ru:'Энергичный командир'},
+                   text:{en:'You combine relentless drive with infectious enthusiasm. You can mobilise a room in minutes and execute on a vision with extraordinary speed. Watch your tendency to move so fast that details slip.',
+                         ru:'Вы сочетаете неудержимую энергию с заразительным энтузиазмом. Вы способны мобилизовать команду за минуты. Следите, чтобы детали не ускользали в спешке.'}},
+  'yellow-green':  {title:{en:'The Warm Inspirer',           ru:'Тёплый вдохновитель'},
+                   text:{en:'You bring people joy and make them feel genuinely seen. Your enthusiasm is tempered by empathy, making you a beloved communicator who rallies people without pressure.',
+                         ru:'Вы дарите радость и заставляете людей чувствовать себя по-настоящему замеченными. Ваш энтузиазм смягчается эмпатией, делая вас любимым коммуникатором.'}},
+  'yellow-blue':  {title:{en:'The Creative Analyst',         ru:'Творческий аналитик'},
+                   text:{en:'You generate bold ideas and then actually stress-test them. This uncommon pairing lets you be the visionary who also builds the blueprint — a rare and powerful combination.',
+                         ru:'Вы генерируете смелые идеи и реально проверяете их на прочность. Это редкое сочетание делает вас провидцем, который также строит чертежи.'}},
+  'green-red':    {title:{en:'The Assertive Protector',      ru:'Настойчивый защитник'},
+                   text:{en:'You push hard toward your goals but ultimately do so in service of the people around you. You fight fiercely for your team yet remain more sensitive to feelings than a typical Red.',
+                         ru:'Вы настойчиво стремитесь к целям, но ради людей вокруг. Яростно сражаетесь за команду и при этом чувствительнее к эмоциям, чем типичный Красный.'}},
+  'green-yellow':  {title:{en:'The Warm Inspirer',           ru:'Тёплый вдохновитель'},
+                   text:{en:'You bring people joy and make them feel genuinely seen. Your enthusiasm is tempered by empathy, making you a beloved communicator who rallies people without pressure.',
+                         ru:'Вы дарите радость и заставляете людей чувствовать себя по-настоящему замеченными. Ваш энтузиазм смягчается эмпатией, делая вас любимым коммуникатором.'}},
+  'green-blue':   {title:{en:'The Thoughtful Supporter',     ru:'Вдумчивый помощник'},
+                   text:{en:'You combine deep care for people with methodical thinking. You solve problems quietly and thoroughly, and your teammates always know you have thought everything through before speaking.',
+                         ru:'Вы сочетаете глубокую заботу о людях с методичным мышлением. Вы решаете проблемы тихо и основательно, и ваша команда всегда знает, что вы всё обдумали.'}},
+  'blue-red':     {title:{en:'The Precise Director',         ru:'Точный директор'},
+                   text:{en:'You drive hard for results and need those results to be correct. This rare combination makes you a formidable leader who thinks strategically and executes decisively.',
+                         ru:'Вы напористо добиваетесь результатов и требуете их точности. Это редкое сочетание делает вас грозным лидером, мыслящим стратегически и действующим решительно.'}},
+  'blue-yellow':  {title:{en:'The Creative Analyst',         ru:'Творческий аналитик'},
+                   text:{en:'You generate bold ideas and then actually stress-test them. This uncommon pairing lets you be the visionary who also builds the blueprint — a rare and powerful combination.',
+                         ru:'Вы генерируете смелые идеи и реально проверяете их на прочность. Это редкое сочетание делает вас провидцем, который также строит чертежи.'}},
+  'blue-green':   {title:{en:'The Thoughtful Supporter',     ru:'Вдумчивый помощник'},
+                   text:{en:'You combine deep care for people with methodical thinking. You solve problems quietly and thoroughly, and your teammates always know you have thought everything through before speaking.',
+                         ru:'Вы сочетаете глубокую заботу о людях с методичным мышлением. Вы решаете проблемы тихо и основательно, и ваша команда всегда знает, что вы всё обдумали.'}}
+};
+
+/* ================================================================
+   STATE
+   ================================================================ */
+var currentQ    = 0;
+var scores      = {red:0, yellow:0, green:0, blue:0};
+var selected    = null;  /* color string for current answer */
+var lastSorted  = null;  /* cached sorted results array */
+
+/* ================================================================
+   SCREEN NAVIGATION
+   ================================================================ */
+function showScreen(name) {
+  ['landing','guide','quiz','results'].forEach(function(id) {
+    document.getElementById('screen-'+id).classList.toggle('hidden', id !== name);
+  });
+  document.getElementById('nav-home').classList.toggle('active',  name === 'landing');
+  document.getElementById('nav-guide').classList.toggle('active', name === 'guide');
+  window.scrollTo(0, 0);
+  if (name === 'guide')   renderGuide();
+}
+
+/* ================================================================
+   QUIZ ENGINE
+   ================================================================ */
+function startQuiz() {
+  currentQ = 0;
+  scores   = {red:0, yellow:0, green:0, blue:0};
+  selected = null;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  var q  = QUESTIONS[currentQ];
+  var L  = currentLang;
+  var pct = Math.round(((currentQ) / QUESTIONS.length) * 100);
+
+  document.getElementById('progress-count').textContent = (currentQ + 1) + ' / ' + QUESTIONS.length;
+  document.getElementById('progress-fill').style.width  = Math.max(pct, 4) + '%';
+  document.getElementById('q-scenario').textContent = q.scenario[L];
+  document.getElementById('q-text').textContent     = q.text[L];
+
+  var list = document.getElementById('options-list');
+  list.innerHTML = '';
+  var letters = ['A','B','C','D'];
+  q.options.forEach(function(opt, i) {
+    var btn = document.createElement('button');
+    btn.className   = 'option-btn';
+    btn.dataset.color = opt.color;
+    btn.innerHTML   =
+      '<span class="option-letter">'+letters[i]+'</span>' +
+      '<span>'+opt.text[L]+'</span>';
+    btn.addEventListener('click', function() { selectOption(btn, opt.color); });
+    list.appendChild(btn);
+  });
+
+  selected = null;
+  document.getElementById('next-btn').disabled = true;
+
+  /* animate card */
+  var card = document.getElementById('question-card');
+  card.classList.remove('fade-in');
+  void card.offsetWidth;
+  card.classList.add('fade-in');
+}
+
+function selectOption(btn, color) {
+  document.querySelectorAll('.option-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  selected = color;
+  document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+  if (selected === null) return;
+  scores[selected]++;
+  currentQ++;
+  if (currentQ < QUESTIONS.length) {
+    renderQuestion();
+  } else {
+    computeResults();
+  }
+}
+
+/* Refresh question text when language switches mid-quiz */
+function refreshQuizText() {
+  if (currentQ < QUESTIONS.length) renderQuestion();
+}
+
+/* ================================================================
+   RESULTS ENGINE
+   ================================================================ */
+function computeResults() {
+  /* Sort colours by score descending */
+  var sorted = ['red','yellow','green','blue'].sort(function(a,b) {
+    return scores[b] - scores[a];
+  });
+  lastSorted = sorted;
+  showScreen('results');
+  renderResults(sorted);
+}
+
+function renderResults(sorted) {
+  var L        = currentLang;
+  var dominant = sorted[0];
+  var second   = sorted[1];
+  var total    = QUESTIONS.length;
+  var col      = COLORS[dominant];
+
+  /* Header */
+  document.getElementById('results-title').textContent    = col.label[L] + ' — ' + col.archetype[L];
+  document.getElementById('results-subtitle').textContent = col.summary[L];
+
+  /* Dominant badge */
+  var badgeWrap = document.getElementById('dominant-badge-wrap');
+  badgeWrap.innerHTML =
+    '<div class="dominant-badge" style="background:'+col.light+';color:'+col.textColor+';border:1px solid '+col.border+';">' +
+      '<span class="score-dot" style="background:'+col.hex+';"></span>' +
+      UI[L].resultsDominant + ': ' + col.label[L] +
+    '</div>';
+
+  /* Blend summary card */
+  var blendKey  = dominant + '-' + second;
+  var blendData = BLEND_SUMMARIES[blendKey] || {
+    title:{en:col.label.en + ' Personality', ru:col.label.ru + ' тип'},
+    text: {en:col.summary.en, ru:col.summary.ru}
+  };
+  document.getElementById('summary-title').textContent = blendData.title[L];
+  document.getElementById('summary-text').textContent  = blendData.text[L];
+
+  /* Legend */
+  var legend = document.getElementById('sil-legend');
+  legend.innerHTML = '';
+  sorted.forEach(function(key) {
+    var c = COLORS[key];
+    var item = document.createElement('div');
+    item.className = 'sil-legend-item';
+    item.innerHTML =
+      '<span class="sil-legend-dot" style="background:'+c.hex+';"></span>' +
+      '<span>'+c.label[L]+'</span>';
+    legend.appendChild(item);
+  });
+
+  /* Score bars */
+  var bars = document.getElementById('score-bars');
+  bars.innerHTML = '';
+  sorted.forEach(function(key) {
+    var c   = COLORS[key];
+    var pct = Math.round((scores[key] / total) * 100);
+    var row = document.createElement('div');
+    row.className = 'score-row';
+    row.innerHTML =
+      '<div class="score-label">' +
+        '<span class="sil-legend-dot" style="background:'+c.hex+';"></span>' +
+        c.label[L] +
+      '</div>' +
+      '<div class="score-track" style="flex:1;">' +
+        '<div class="score-fill" style="background:'+c.hex+';--tw:'+pct+'%;"></div>' +
+      '</div>' +
+      '<div class="score-pct">'+pct+'%</div>';
+    bars.appendChild(row);
+    /* Trigger bar animation */
+    requestAnimationFrame(function() {
+      var fill = row.querySelector('.score-fill');
+      fill.style.width = pct + '%';
+    });
+  });
+
+  /* SVG gradient */
+  buildGradient(sorted);
+}
+
+function buildGradient(sorted) {
+  var grad = document.getElementById('bodyGradient');
+  while (grad.firstChild) grad.removeChild(grad.firstChild);
+
+  /* Map sorted keys to cumulative stops (bottom → top) */
+  var total   = QUESTIONS.length;
+  var cumul   = 0;
+  var offsets = [];
+
+  sorted.forEach(function(key) {
+    var share = scores[key] / total;
+    offsets.push({key:key, from:cumul, to:cumul + share});
+    cumul += share;
+  });
+
+  offsets.forEach(function(seg, i) {
+    var c = COLORS[seg.key];
+    var s1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+    s1.setAttribute('offset', (seg.from * 100).toFixed(1) + '%');
+    s1.setAttribute('stop-color', c.hex);
+    grad.appendChild(s1);
+
+    var s2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+    s2.setAttribute('offset', (seg.to * 100).toFixed(1) + '%');
+    s2.setAttribute('stop-color', c.hex);
+    grad.appendChild(s2);
+  });
+
+  /* Animate the fill rect from bottom */
+  var fill = document.getElementById('grad-fill');
+  fill.setAttribute('y', '240');
+  fill.setAttribute('height', '0');
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      fill.setAttribute('y', '0');
+      fill.setAttribute('height', '240');
+    });
+  });
+}
+
+/* ================================================================
+   GUIDE RENDERER
+   ================================================================ */
+function renderGuide() {
+  var L    = currentLang;
+  var grid = document.getElementById('guide-grid');
+  grid.innerHTML = '';
+
+  ['red','yellow','green','blue'].forEach(function(key) {
+    var c    = COLORS[key];
+    var card = document.createElement('div');
+    card.className = 'guide-card slide-up';
+
+    /* Trait pills */
+    var pills = c.traits[L].map(function(t) {
+      return '<li class="trait-pill" style="background:'+c.light+';color:'+c.textColor+';border-color:'+c.border+';">'+t+'</li>';
+    }).join('');
+
+    /* Celebrity cards */
+    var celebs = c.celebrities.map(function(celeb) {
+      return (
+        '<div class="celeb-card">' +
+          '<div class="celeb-card-top">' +
+            '<img class="celeb-photo" src="'+celeb.photo+'" alt="'+celeb.name+'" ' +
+              'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
+            '<div class="celeb-initials" style="background:'+c.hex+';">'+celeb.initials+'</div>' +
+            '<div class="celeb-name-block">' +
+              '<div class="celeb-name">'+celeb.name+'</div>' +
+              '<div class="celeb-badge" style="background:'+c.light+';color:'+c.textColor+';">'+celeb.achievement[L]+'</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="celeb-note">'+celeb.note[L]+'</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    card.innerHTML =
+      '<div class="guide-card-banner" style="background:'+c.hex+';"></div>' +
+      '<div class="guide-card-header">' +
+        '<div class="guide-color-icon" style="background:'+c.hex+';">'+c.label[L].charAt(0)+'</div>' +
+        '<div class="guide-card-head-text">' +
+          '<div class="guide-card-title">'+c.label[L]+'</div>' +
+          '<div class="guide-card-archetype">'+c.archetype[L]+'</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="guide-card-description">'+c.summary[L]+'</div>' +
+      '<div class="guide-card-body">' +
+        '<ul class="trait-list">'+pills+'</ul>' +
+        '<p class="celeb-section-label">'+UI[L].celebArchetypes+'</p>' +
+        '<div class="celebrity-grid">'+celebs+'</div>' +
+      '</div>';
+
+    grid.appendChild(card);
+  });
+}
+
+/* ================================================================
+   BOOTSTRAP
+   ================================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  setLang('en');
+});
+</script>
+</body>
+</html>
